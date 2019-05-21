@@ -10,7 +10,7 @@ class Header extends React.Component {
         <Navbar.Brand href="#home">
           <img
             style={{ marginRight: 5 }}
-            src="/img/markdown.png"
+            src="/img/stratejos-head.svg"
             width="50"
             height="30"
             marginRight="5"

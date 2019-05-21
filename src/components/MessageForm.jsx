@@ -1,17 +1,27 @@
 import React from "react";
+import styled from 'styled-components'
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Collapse from "react-bootstrap/Collapse";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPaperPlane,
-  faEye,
-  faEyeSlash,
   faCaretSquareDown,
-  faCaretSquareUp
+  faCaretSquareUp,
+  faCommentDots,
+ 
 } from "@fortawesome/free-regular-svg-icons";
+
+const Heading = styled.h3`
+width: 100%;
+text-align: center;
+font-weight: 300;
+margin-top: 20px
+
+`
 
 class MessageForm extends React.Component {
   constructor(props) {
@@ -24,18 +34,22 @@ class MessageForm extends React.Component {
     const advanced = this.state.advanced;
     return (
       <Form>
+          <Row>
+              <Heading> NEW MESSAGE <FontAwesomeIcon icon={faCommentDots} /></Heading>
+            
+          </Row>
         <Form.Group controlId="formToEmail">
           <Form.Label>Recipient</Form.Label>
           <Form.Control type="email" placeholder="Enter email" />
           <Form.Text className="text-muted">
-            The email address of a registered stratejos user
+            Must be a registered stratejos user
           </Form.Text>
         </Form.Group>
         <Form.Group controlId="exampleForm.ControlTextarea1">
           <Form.Label>Message</Form.Label>
           <Form.Control id="editor" as="textarea" rows="10" />
           <Form.Text className="text-muted">
-            Must be a valid JSON formatted slack message
+            Supports JSON formatted <a href= "https://api.slack.com/block-kit" target = "_blank" > Slack Block Kit </a> messages
           </Form.Text>
         </Form.Group>
         <Form.Group>
