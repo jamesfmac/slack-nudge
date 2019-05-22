@@ -1,5 +1,9 @@
 import React from "react";
-import styled from 'styled-components'
+import styled from "styled-components";
+
+import JSONInput from "react-json-editor-ajrm";
+import locale from "react-json-editor-ajrm/locale/en";
+
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
@@ -11,33 +15,60 @@ import {
   faPaperPlane,
   faCaretSquareDown,
   faCaretSquareUp,
-  faCommentDots,
- 
+  faCommentDots
 } from "@fortawesome/free-regular-svg-icons";
+import FormCheckInput from "react-bootstrap/FormCheckInput";
+
+const url = "https://api.slack.com/block-kit";
 
 const Heading = styled.h3`
-width: 100%;
-text-align: center;
-font-weight: 300;
-margin-top: 20px
+  width: 100%;
+  text-align: center;
+  font-weight: 300;
+  margin-top: 20px;
+`;
 
-`
+const inputStyle = {
+  display: `block`,
+  width: `100%`,
+  padding: `.375rem .75rem`,
+  fontSize: ` 1rem`,
+  fontWeight: `400`,
+  lineHeight: `1.5`,
+  color: `#495057`,
+  backgroundColor: `#fff`,
+  backgroundClip: `padding-box`,
+  border: `1px solid #ced4da`,
+  borderRadius: `.25rem`,
+  transition: `border-color .15s ease-in-out,box-shadow .15s ease-in-out`
+};
 
 class MessageForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      advanced: false
+      advanced: false,
+      message: "{'block': {'red': false}"
     };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSend = this.handleSend.bind(this);
   }
+  handleChange(e) {
+    this.setState({
+      message: e.target.value
+    });
+  }
+  handleSend() {}
+
   render() {
     const advanced = this.state.advanced;
     return (
       <Form>
-          <Row>
-              <Heading> NEW MESSAGE <FontAwesomeIcon icon={faCommentDots} /></Heading>
-            
-          </Row>
+        <Row>
+          <Heading>
+            NEW MESSAGE <FontAwesomeIcon icon={faCommentDots} />
+          </Heading>
+        </Row>
         <Form.Group controlId="formToEmail">
           <Form.Label>Recipient</Form.Label>
           <Form.Control type="email" placeholder="Enter email" />
@@ -45,13 +76,31 @@ class MessageForm extends React.Component {
             Must be a registered stratejos user
           </Form.Text>
         </Form.Group>
-        <Form.Group controlId="exampleForm.ControlTextarea1">
+        <Form.Group>
           <Form.Label>Message</Form.Label>
-          <Form.Control id="editor" as="textarea" rows="10" />
-          <Form.Text className="text-muted">
-            Supports JSON formatted <a href= "https://api.slack.com/block-kit" target = "_blank" > Slack Block Kit </a> messages
+         
+            <JSONInput
+              id="a_unique_id"
+              placeholder={{ blocks: { type: "Section" } }}
+              theme="light_mitsuketa_tribute"
+              locale={locale}
+              waitAfterKeyPress = {2000}
+              height="450px"
+              width="100%"
+              style={{ container: inputStyle }}
+            />
+           <Form.Text className="text-muted">
+            Supports JSON formatted
+            <a href={url} target="_blank" rel="noopener noreferrer">
+              Slack Block Kit
+            </a>
+            messages
           </Form.Text>
         </Form.Group>
+
+     
+         
+      
         <Form.Group>
           <div>
             <span
@@ -59,7 +108,8 @@ class MessageForm extends React.Component {
               aria-controls="example-collapse-text"
               aria-expanded={advanced}
             >
-               Config  <FontAwesomeIcon
+              
+              Config  <FontAwesomeIcon
                 icon={advanced ? faCaretSquareUp : faCaretSquareDown}
               />
             </span>

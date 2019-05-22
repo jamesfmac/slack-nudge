@@ -13,8 +13,7 @@ class Header extends React.Component {
             src="/img/stratejos-head.svg"
             width="50"
             height="30"
-            marginRight="5"
-            margin-right="20"
+            
             className="d-inline-block align-top"
             alt="React Bootstrap logo"
           />{" "}
