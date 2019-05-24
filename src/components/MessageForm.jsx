@@ -1,9 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 
-import JSONInput from "react-json-editor-ajrm";
-import locale from "react-json-editor-ajrm/locale/en";
-
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
@@ -17,7 +14,7 @@ import {
   faCaretSquareUp,
   faCommentDots
 } from "@fortawesome/free-regular-svg-icons";
-import FormCheckInput from "react-bootstrap/FormCheckInput";
+import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 
 const url = "https://api.slack.com/block-kit";
 
@@ -28,40 +25,45 @@ const Heading = styled.h3`
   margin-top: 20px;
 `;
 
-const inputStyle = {
-  display: `block`,
-  width: `100%`,
-  padding: `.375rem .75rem`,
-  fontSize: ` 1rem`,
-  fontWeight: `400`,
-  lineHeight: `1.5`,
-  color: `#495057`,
-  backgroundColor: `#fff`,
-  backgroundClip: `padding-box`,
-  border: `1px solid #ced4da`,
-  borderRadius: `.25rem`,
-  transition: `border-color .15s ease-in-out,box-shadow .15s ease-in-out`
-};
-
 class MessageForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      advanced: false,
-      message: "{'block': {'red': false}"
+      showConfig: false,
+      attachButton: true,
+      recipients: "",
+      msgBody: "",
+      btnLabel: "",
+      btnURL: ""
     };
+
+    this.handleConfigChange = this.handleConfigChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
+
     this.handleSend = this.handleSend.bind(this);
   }
-  handleChange(e) {
+
+  handleButtonChange() {
     this.setState({
-      message: e.target.value
+      attachButton: !this.state.attachButton
     });
   }
+
+  handleConfigChange() {
+    this.setState({
+      showConfig: !this.state.showConfig
+    });
+  }
+
+  handleChange(e) {
+    this.setState({ [e.target.id]: e.target.value });
+  }
+
   handleSend() {}
 
   render() {
-    const advanced = this.state.advanced;
+    const showConfig = this.state.showConfig;
+    const attachButton = this.state.attachButton;
     return (
       <Form>
         <Row>
@@ -69,70 +71,110 @@ class MessageForm extends React.Component {
             NEW MESSAGE <FontAwesomeIcon icon={faCommentDots} />
           </Heading>
         </Row>
-        <Form.Group controlId="formToEmail">
-          <Form.Label>Recipient</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" />
-          <Form.Text className="text-muted">
-            Must be a registered stratejos user
-          </Form.Text>
-        </Form.Group>
         <Form.Group>
-          <Form.Label>Message</Form.Label>
-         
-            <JSONInput
-              id="a_unique_id"
-              placeholder={{ blocks: { type: "Section" } }}
-              theme="light_mitsuketa_tribute"
-              locale={locale}
-              waitAfterKeyPress = {2000}
-              height="450px"
-              width="100%"
-              style={{ container: inputStyle }}
-            />
-           <Form.Text className="text-muted">
-            Supports JSON formatted
-            <a href={url} target="_blank" rel="noopener noreferrer">
-              Slack Block Kit
-            </a>
-            messages
-          </Form.Text>
-        </Form.Group>
-
-     
-         
-      
-        <Form.Group>
-          <div>
+          <div className="text-muted">
             <span
-              onClick={() => this.setState({ advanced: !advanced })}
-              aria-controls="example-collapse-text"
-              aria-expanded={advanced}
+              onClick={() => this.handleConfigChange()}
+              aria-controls="confi-collapsed"
+              aria-expanded={showConfig}
             >
-              
-              Config  <FontAwesomeIcon
-                icon={advanced ? faCaretSquareUp : faCaretSquareDown}
+              Msg settings{" "}
+              <FontAwesomeIcon
+                icon={showConfig ? faCaretSquareUp : faCaretSquareDown}
               />
             </span>
           </div>
         </Form.Group>
-        <Collapse in={this.state.advanced}>
+        <Collapse in={this.state.showConfig}>
           <Row>
             <Col>
-              <Form.Group controlId="formUserEmail">
+              <Form.Group controlId="adminEmail">
                 <Form.Label>Stratejos Admin</Form.Label>
                 <Form.Control type="email" placeholder="Username" />
               </Form.Group>
             </Col>
             <Col>
-              <Form.Group controlId="formBasicEmail">
+              <Form.Group controlId="adminPassword">
                 <Form.Label>Password</Form.Label>
                 <Form.Control type="password" placeholder="Password" />
               </Form.Group>
             </Col>
           </Row>
         </Collapse>
+        <Form.Group controlId="recipients">
+          <Form.Label>Recipient</Form.Label>
+          <Form.Control
+            type="email"
+            placeholder="Enter email"
+            onChange={this.handleChange}
+            value={this.state.recipients}
+          />
+          <Form.Text className="text-muted">
+            Must be a registered stratejos user
+          </Form.Text>
+        </Form.Group>
+        <Form.Group controlId="msgBody">
+          <Form.Label>Message body</Form.Label>
+          <Form.Control
+            as="textarea"
+            rows="5"
+            onChange={this.handleChange}
+            value={this.state.msgBody}
+          />
+          <Form.Text className="text-muted">
+            Supports markdown or text. Refer to{" "}
+            <a href={url} target="_blank" rel="noopener noreferrer">
+              {" "}
+              Slack Block Kit
+            </a>
+          </Form.Text>
+        </Form.Group>
+        <Collapse in={this.state.attachButton}>
+          <Row>
+            <Col md={{ span: 4 }}>
+              <Form.Group controlId="btnLabel">
+                <Form.Label>Label</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Click!"
+                  onChange={this.handleChange}
+                  value={this.state.btnLabel}
+                />
+                <Form.Text className="text-muted">
+                  {" "}
+                  Supports markdown + emoji
+                </Form.Text>
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group controlId="btnURL">
+                <Form.Label>URL</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="https://app.stratejos.com/"
+                  onChange={this.handleChange}
+                  value={this.state.btnURL}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+        </Collapse>
         <Form.Group>
-          <Button variant="primary" type="submit" className="pull-right">
+          <div style={{ marginBottom: "10px", textAlign: "center" }}>
+            <span
+              onClick={() => this.handleButtonChange()}
+              style={{
+                cursor: " pointer"
+              }}
+            >
+              <FontAwesomeIcon icon={attachButton ? faMinus : faPlus} />{" "}
+              {attachButton ? "Remove button" : "Add Button"}
+            </span>
+          </div>
+        </Form.Group>
+
+        <Form.Group className="pull-right">
+          <Button variant="primary" type="submit">
             <FontAwesomeIcon icon={faPaperPlane} /> Send
           </Button>
         </Form.Group>
