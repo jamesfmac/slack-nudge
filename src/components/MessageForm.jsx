@@ -1,69 +1,112 @@
 import React from "react";
-import styled from "styled-components";
 
 import Form from "react-bootstrap/Form";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import DropdownButton from "react-bootstrap/DropdownButton";
+import Dropdown from "react-bootstrap/Dropdown";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Collapse from "react-bootstrap/Collapse";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faMinus, faRedo } from "@fortawesome/free-solid-svg-icons";
 import {
   faPaperPlane,
-  faCaretSquareDown,
-  faCaretSquareUp,
   faCommentDots
 } from "@fortawesome/free-regular-svg-icons";
-import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 
-const url = "https://api.slack.com/block-kit";
 
-const Heading = styled.h3`
-  width: 100%;
-  text-align: center;
-  font-weight: 300;
-  margin-top: 20px;
-`;
+import { Heading } from "./styled";
+import TemplateSelector from  "./TemplateSelector"
+
+
+
+import submitMessage from "../utils/submitMessage";
 
 class MessageForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showConfig: false,
+      submissionPending: false,
+      formTouched: true,
       attachButton: true,
-      recipients: "",
-      msgBody: "",
-      btnLabel: "",
-      btnURL: ""
+      recipients: "jamesm@stratejos.ai",
+      msgText: "Hey",
+      msgBody:
+        "Hey Jason,\n\n It looks like you might have had trouble connecting Jira? Once connected I can help you:\n\n    :fire: Get scheduled custom messages\n    :fire: Create and update issues from Slack\n    :fire: Unfurl Jira URL's in Slack\n\n Connecting is easy, just click below to get started.",
+      btnLabel: ":zap: Connect Jira",
+      btnURL:
+        "https://app.stratejos.com/#/organisation/jira-integration-instructions",
+      supportBody: "Need support? Email my friendly creators hello@stratejos.ai"
     };
-
-    this.handleConfigChange = this.handleConfigChange.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-
-    this.handleSend = this.handleSend.bind(this);
   }
 
   handleButtonChange() {
     this.setState({
-      attachButton: !this.state.attachButton
+      attachButton: !this.state.attachButton,
+      btnLabel: "",
+      btnURL: ""
     });
   }
 
-  handleConfigChange() {
+  handleChange = e => {
     this.setState({
-      showConfig: !this.state.showConfig
+      formTouched: true,
+      [e.target.id]: e.target.value
     });
-  }
+  };
 
-  handleChange(e) {
-    this.setState({ [e.target.id]: e.target.value });
-  }
+  resetForm = e => {
+    this.setState({
+      submissionPending: false,
+      formTouched: false,
+      attachButton: true,
+      recipients: "",
+      msgText: "",
+      msgBody: "",
+      btnLabel: "",
+      btnURL: "",
+      supportBody: ""
+    });
+  };
 
-  handleSend() {}
+  handleError = error => {
+    this.setState({
+      submissionPending: false
+    });
+    this.props.showError(`Failed. Message not sent`);
+  };
+
+  handleSuccess = e => {
+    this.props.showSuccess(`Sucess! Message delivered`);
+    this.resetForm();
+    window.scroll({ top: 0, left: 0, behavior: "smooth" });
+  };
+
+  handleSend = e => {
+    e.preventDefault();
+    this.props.showInfo("Message submitted...");
+    this.setState({
+      submissionPending: true
+    });
+
+    submitMessage(
+      this.handleError,
+      this.handleSuccess,
+      this.state.recipients,
+      this.state.msgText,
+      this.state.msgBody,
+      this.state.supportBody,
+      this.state.attachButton
+        ? { label: this.state.btnLabel, url: this.state.btnURL }
+        : null
+    );
+  };
 
   render() {
-    const showConfig = this.state.showConfig;
     const attachButton = this.state.attachButton;
+    const url = "https://api.slack.com/block-kit";
     return (
       <Form>
         <Row>
@@ -71,36 +114,9 @@ class MessageForm extends React.Component {
             NEW MESSAGE <FontAwesomeIcon icon={faCommentDots} />
           </Heading>
         </Row>
-        <Form.Group>
-          <div className="text-muted">
-            <span
-              onClick={() => this.handleConfigChange()}
-              aria-controls="confi-collapsed"
-              aria-expanded={showConfig}
-            >
-              Msg settings{" "}
-              <FontAwesomeIcon
-                icon={showConfig ? faCaretSquareUp : faCaretSquareDown}
-              />
-            </span>
-          </div>
-        </Form.Group>
-        <Collapse in={this.state.showConfig}>
-          <Row>
-            <Col>
-              <Form.Group controlId="adminEmail">
-                <Form.Label>Stratejos Admin</Form.Label>
-                <Form.Control type="email" placeholder="Username" />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group controlId="adminPassword">
-                <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="Password" />
-              </Form.Group>
-            </Col>
-          </Row>
-        </Collapse>
+        <TemplateSelector />
+       
+
         <Form.Group controlId="recipients">
           <Form.Label>Recipient</Form.Label>
           <Form.Control
@@ -108,18 +124,34 @@ class MessageForm extends React.Component {
             placeholder="Enter email"
             onChange={this.handleChange}
             value={this.state.recipients}
+            readOnly={this.state.submissionPending}
           />
           <Form.Text className="text-muted">
             Must be a registered stratejos user
           </Form.Text>
         </Form.Group>
+        <Form.Group controlId="msgText">
+          <Form.Label>Text</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Hi :wave:"
+            onChange={this.handleChange}
+            value={this.state.msgText}
+            readOnly={this.state.submissionPending}
+          />
+          <Form.Text className="text-muted">
+            {" "}
+            Supports markdown + emoji
+          </Form.Text>
+        </Form.Group>
         <Form.Group controlId="msgBody">
-          <Form.Label>Message body</Form.Label>
+          <Form.Label>Body</Form.Label>
           <Form.Control
             as="textarea"
             rows="5"
             onChange={this.handleChange}
             value={this.state.msgBody}
+            readOnly={this.state.submissionPending}
           />
           <Form.Text className="text-muted">
             Supports markdown or text. Refer to{" "}
@@ -138,7 +170,8 @@ class MessageForm extends React.Component {
                   type="text"
                   placeholder="Click!"
                   onChange={this.handleChange}
-                  value={this.state.btnLabel}
+                  value={this.state.ms}
+                  readOnly={this.state.submissionPending}
                 />
                 <Form.Text className="text-muted">
                   {" "}
@@ -154,6 +187,7 @@ class MessageForm extends React.Component {
                   placeholder="https://app.stratejos.com/"
                   onChange={this.handleChange}
                   value={this.state.btnURL}
+                  readOnly={this.state.submissionPending}
                 />
               </Form.Group>
             </Col>
@@ -172,14 +206,62 @@ class MessageForm extends React.Component {
             </span>
           </div>
         </Form.Group>
-
-        <Form.Group className="pull-right">
-          <Button variant="primary" type="submit">
-            <FontAwesomeIcon icon={faPaperPlane} /> Send
-          </Button>
+        <Form.Group controlId="supportBody">
+          <Form.Label>Support text</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="email me@info.com for support"
+            onChange={this.handleChange}
+            value={this.state.supportBody}
+            readOnly={this.state.submissionPending}
+          />
+          <Form.Text className="text-muted">
+            Supports markdown or text. Refer to{" "}
+            <a href={url} target="_blank" rel="noopener noreferrer">
+              {" "}
+              Slack Block Kit
+            </a>
+          </Form.Text>
+        </Form.Group>
+        {this.state.formTouched ? (
+          <span
+            className="text-muted"
+            onClick={this.resetForm}
+            style={{
+              cursor: " pointer",
+              marginRight: "10px",
+              fontSize: "80%"
+            }}
+          >
+            <FontAwesomeIcon icon={faRedo} /> Clear fields
+          </span>
+        ) : null}
+        <Form.Group className="float-right">
+          <ButtonGroup>
+            <Button
+              variant="primary"
+              type="submit"
+              onClick={this.handleSend}
+              onMouseDown={e => e.preventDefault()}
+              disabled={this.state.submissionPending}
+            >
+              <FontAwesomeIcon icon={faPaperPlane} /> Send
+            </Button>
+            <DropdownButton
+              as={ButtonGroup}
+              id="bg-nested-dropdown"
+              title=""
+              style={{ borderLeft: `1px solid #004ad3` }}
+              disabled={this.state.submissionPending}
+            >
+              <Dropdown.Item eventKey="1">Send test</Dropdown.Item>
+              <Dropdown.Item eventKey="2">Save as template</Dropdown.Item>
+            </DropdownButton>
+          </ButtonGroup>
         </Form.Group>
       </Form>
     );
   }
 }
+
 export default MessageForm;
