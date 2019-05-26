@@ -32,7 +32,7 @@ class App extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Col md={{ span: 8, offset: 2 }} xs={{ span: 10 }}>
+          <Col md={{ span: 10, offset: 1 }} xs={{ span: 10 }}>
             <MessageForm
               showError={showError}
               showSuccess={showSuccess}

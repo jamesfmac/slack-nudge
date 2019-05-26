@@ -15,32 +15,35 @@ import {
   faPaperPlane,
   faCommentDots
 } from "@fortawesome/free-regular-svg-icons";
-
-
 import { Heading } from "./styled";
-import TemplateSelector from  "./TemplateSelector"
 
-
+import TemplateSelector from "./TemplateSelector";
 
 import submitMessage from "../utils/submitMessage";
+import { StyledGroup } from "./Styled";
+import { FormGroup } from "react-bootstrap";
 
 class MessageForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       submissionPending: false,
-      formTouched: true,
+      formTouched: false,
       attachButton: true,
-      recipients: "jamesm@stratejos.ai",
-      msgText: "Hey",
-      msgBody:
-        "Hey Jason,\n\n It looks like you might have had trouble connecting Jira? Once connected I can help you:\n\n    :fire: Get scheduled custom messages\n    :fire: Create and update issues from Slack\n    :fire: Unfurl Jira URL's in Slack\n\n Connecting is easy, just click below to get started.",
-      btnLabel: ":zap: Connect Jira",
-      btnURL:
-        "https://app.stratejos.com/#/organisation/jira-integration-instructions",
-      supportBody: "Need support? Email my friendly creators hello@stratejos.ai"
+      recipients: "",
+      msgText: "",
+      msgBody: "",
+      btnLabel: "",
+      btnURL: "",
+      supportBody: ""
     };
   }
+
+  handleApplyTemplate = formState => {
+    this.setState({
+      ...formState
+    });
+  };
 
   handleButtonChange() {
     this.setState({
@@ -114,151 +117,218 @@ class MessageForm extends React.Component {
             NEW MESSAGE <FontAwesomeIcon icon={faCommentDots} />
           </Heading>
         </Row>
-        <TemplateSelector />
-       
 
-        <Form.Group controlId="recipients">
-          <Form.Label>Recipient</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="Enter email"
-            onChange={this.handleChange}
-            value={this.state.recipients}
-            readOnly={this.state.submissionPending}
-          />
-          <Form.Text className="text-muted">
-            Must be a registered stratejos user
-          </Form.Text>
+        <Form.Group>
+          <Form.Row>
+            <Col md={{ span: 3, offset: 0 }}>
+              <TemplateSelector applyTemplate={this.handleApplyTemplate} />
+            </Col>
+          </Form.Row>
         </Form.Group>
-        <Form.Group controlId="msgText">
-          <Form.Label>Text</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Hi :wave:"
-            onChange={this.handleChange}
-            value={this.state.msgText}
-            readOnly={this.state.submissionPending}
-          />
-          <Form.Text className="text-muted">
-            {" "}
-            Supports markdown + emoji
-          </Form.Text>
-        </Form.Group>
-        <Form.Group controlId="msgBody">
-          <Form.Label>Body</Form.Label>
-          <Form.Control
-            as="textarea"
-            rows="5"
-            onChange={this.handleChange}
-            value={this.state.msgBody}
-            readOnly={this.state.submissionPending}
-          />
-          <Form.Text className="text-muted">
-            Supports markdown or text. Refer to{" "}
-            <a href={url} target="_blank" rel="noopener noreferrer">
-              {" "}
-              Slack Block Kit
-            </a>
-          </Form.Text>
-        </Form.Group>
-        <Collapse in={this.state.attachButton}>
-          <Row>
-            <Col md={{ span: 4 }}>
-              <Form.Group controlId="btnLabel">
-                <Form.Label>Label</Form.Label>
+        <StyledGroup>
+          <Form.Group controlId="recipients">
+            <Form.Row>
+              <Col md={{ span: 3 }}>
+                <Form.Label>Recipients</Form.Label>
+                <Form.Text className="text-muted">
+                  Must be existing users
+                </Form.Text>
+              </Col>
+              <Col>
                 <Form.Control
-                  type="text"
-                  placeholder="Click!"
+                  type="email"
+                  placeholder="user@domain.com"
                   onChange={this.handleChange}
-                  value={this.state.ms}
+                  value={this.state.recipients}
                   readOnly={this.state.submissionPending}
                 />
+              </Col>
+            </Form.Row>
+          </Form.Group>
+
+          <Form.Group controlId="msgText">
+            <Form.Row>
+              <Col md={{ span: 3 }}>
+                <Form.Label>Notification text</Form.Label>
                 <Form.Text className="text-muted">
                   {" "}
-                  Supports markdown + emoji
+                  Displayed in Slack alerts.
                 </Form.Text>
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group controlId="btnURL">
-                <Form.Label>URL</Form.Label>
+              </Col>
+              <Col>
                 <Form.Control
                   type="text"
-                  placeholder="https://app.stratejos.com/"
+                  placeholder="Hi I'm here to..."
                   onChange={this.handleChange}
-                  value={this.state.btnURL}
+                  value={this.state.msgText}
                   readOnly={this.state.submissionPending}
                 />
-              </Form.Group>
+              </Col>
+            </Form.Row>
+          </Form.Group>
+
+          <Form.Group as={Form.Row} controlId="msgBody">
+            <Col md={{ span: 3 }}>
+              <Form.Label>Message body</Form.Label>
+              <Form.Text className="text-muted">
+                {" "}
+                The body uses Slack style markdown. See{" "}
+                <a href={url} target="_blank" rel="noopener noreferrer">
+                  {" "}
+                  Slack Block Kit
+                </a>{" "}
+                for more.
+              </Form.Text>
+            </Col>
+            <Col>
+              <Form.Control
+                as="textarea"
+                rows="10"
+                placeholder="Your main message.."
+                onChange={this.handleChange}
+                value={this.state.msgBody}
+                readOnly={this.state.submissionPending}
+              />
+              <Form.Text className="text-muted" />
+            </Col>
+          </Form.Group>
+          <Row>
+            <Col md={{ span: 3 }}>
+              <div>
+                <span>Button </span>{" "}
+              </div>
+              {attachButton ? (
+                <div
+                  onClick={() => this.handleButtonChange()}
+                  style={{
+                    cursor: " pointer",
+                    fontSize: "75%",
+                    color: "red",
+                    marginTop: "10px"
+                  }}
+                >
+                  Disable
+                </div>
+              ) : (
+                <div
+                  onClick={() => this.handleButtonChange()}
+                  style={{
+                    cursor: " pointer",
+                    fontSize: "75%",
+                    marginTop: "10px"
+                  }}
+                >
+                  Enable
+                </div>
+              )}
+            </Col>
+            <Col>
+              <Row>
+                <Col md={{ span: 4 }}>
+                  <Form.Group controlId="btnLabel">
+                    <Form.Label
+                      style={
+                        !this.state.attachButton ? { color: "grey" } : null
+                      }
+                    >
+                      Button label
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Action"
+                      onChange={this.handleChange}
+                      value={this.state.ms}
+                      readOnly={
+                        this.state.submissionPending | !this.state.attachButton
+                      }
+                    />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group controlId="btnURL">
+                    <Form.Label
+                      style={
+                        !this.state.attachButton ? { color: "grey" } : null
+                      }
+                    >
+                      Button URL
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="https://myapp.com"
+                      onChange={this.handleChange}
+                      value={this.state.btnURL}
+                      readOnly={
+                        this.state.submissionPending | !this.state.attachButton
+                      }
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
             </Col>
           </Row>
-        </Collapse>
-        <Form.Group>
-          <div style={{ marginBottom: "10px", textAlign: "center" }}>
-            <span
-              onClick={() => this.handleButtonChange()}
-              style={{
-                cursor: " pointer"
-              }}
-            >
-              <FontAwesomeIcon icon={attachButton ? faMinus : faPlus} />{" "}
-              {attachButton ? "Remove button" : "Add Button"}
-            </span>
-          </div>
-        </Form.Group>
-        <Form.Group controlId="supportBody">
-          <Form.Label>Support text</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="email me@info.com for support"
-            onChange={this.handleChange}
-            value={this.state.supportBody}
-            readOnly={this.state.submissionPending}
-          />
-          <Form.Text className="text-muted">
-            Supports markdown or text. Refer to{" "}
-            <a href={url} target="_blank" rel="noopener noreferrer">
-              {" "}
-              Slack Block Kit
-            </a>
-          </Form.Text>
-        </Form.Group>
-        {this.state.formTouched ? (
-          <span
-            className="text-muted"
-            onClick={this.resetForm}
-            style={{
-              cursor: " pointer",
-              marginRight: "10px",
-              fontSize: "80%"
-            }}
-          >
-            <FontAwesomeIcon icon={faRedo} /> Clear fields
-          </span>
-        ) : null}
-        <Form.Group className="float-right">
-          <ButtonGroup>
-            <Button
-              variant="primary"
-              type="submit"
-              onClick={this.handleSend}
-              onMouseDown={e => e.preventDefault()}
-              disabled={this.state.submissionPending}
-            >
-              <FontAwesomeIcon icon={faPaperPlane} /> Send
-            </Button>
-            <DropdownButton
-              as={ButtonGroup}
-              id="bg-nested-dropdown"
-              title=""
-              style={{ borderLeft: `1px solid #004ad3` }}
-              disabled={this.state.submissionPending}
-            >
-              <Dropdown.Item eventKey="1">Send test</Dropdown.Item>
-              <Dropdown.Item eventKey="2">Save as template</Dropdown.Item>
-            </DropdownButton>
-          </ButtonGroup>
-        </Form.Group>
+          <Form.Group controlId="supportBody">
+            <Row>
+              <Col md={{ span: 3 }}>
+                <Form.Label>Support text</Form.Label>
+              </Col>
+              <Col>
+                <Form.Control
+                  type="text"
+                  placeholder="How can they contact you?"
+                  onChange={this.handleChange}
+                  value={this.state.supportBody}
+                  readOnly={this.state.submissionPending}
+                />
+              </Col>
+            </Row>
+          </Form.Group>
+
+          <Form.Group>
+            <Row>
+              <Col md={{ span: 3, offset: 3 }}>
+                {this.state.formTouched ? (
+                  <span
+                    className="text-muted"
+                    onClick={this.resetForm}
+                    style={{
+                      cursor: " pointer",
+                      marginRight: "10px",
+                      fontSize: "80%",
+                      display: "inline"
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faRedo} /> Reset
+                  </span>
+                ) : null}
+              </Col>
+
+              <Col>
+                <ButtonGroup className="float-right">
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    onClick={this.handleSend}
+                    onMouseDown={e => e.preventDefault()}
+                    disabled={this.state.submissionPending}
+                  >
+                    <FontAwesomeIcon icon={faPaperPlane} /> Send
+                  </Button>
+                  <DropdownButton
+                    as={ButtonGroup}
+                    id="bg-nested-dropdown"
+                    title=""
+                    style={{ borderLeft: `1px solid #004ad3` }}
+                    disabled={this.state.submissionPending}
+                  >
+                    <Dropdown.Item eventKey="1">Send test</Dropdown.Item>
+                    <Dropdown.Item eventKey="2">Save as template</Dropdown.Item>
+                  </DropdownButton>
+                </ButtonGroup>
+              </Col>
+            </Row>
+          </Form.Group>
+        </StyledGroup>
       </Form>
     );
   }
