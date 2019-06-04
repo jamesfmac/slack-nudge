@@ -1,46 +1,89 @@
 import React from "react";
-import { Container, Row, Col } from "react-bootstrap";
 
-import Header from "./components/Header";
-import MessageForm from "./components/MessageForm";
-import { showError, showSuccess, showInfo } from "./components/toasts/Toast";
-import { ToastContainer } from "react-toastify";
+import Home from "./pages/Home.js";
+import { Page404 } from "./components/Page404";
+import { Login } from "./components/Login";
 
-const globalStyles = {
-  color: "rgba(0, 0, 0, 0.87)",
-  fontSize: "1rem",
-  fontFamily: "Roboto, Helvetica, Arial, sans-serif",
-  fontWeight: "400",
-  lineHeight: "1.75",
-  letterSpacing: "0.00938em"
+import { Route, Link, BrowserRouter, Switch, Redirect } from "react-router-dom";
+import { Firebase, fireAuth, provider } from "./utils/firebase";
+
+const PrivateRoute = function({ component: Component, authed, ...rest }) {
+  console.log(`authed: ${authed === true}`);
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        authed != null ? (
+          <Component {...props} />
+        ) : (
+          <Redirect
+            to={{ pathname: "/login", state: { from: props.location } }}
+          />
+        )
+      }
+    />
+  );
 };
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      user: Firebase.auth().currentUser
+    };
+  }
+
+  login = () => {
+    fireAuth.signInWithRedirect(provider).then(result => {
+      const user = result.user;
+      this.setState({
+        user
+      });
+    });
+  };
+
+  logout = () => {
+    console.log(`Logging out`);
+    fireAuth.signOut().then(() => {
+      this.setState({
+        user: null
+      });
+    });
+  };
+
+  componentDidMount() {
+    console.log('mounted')
+    fireAuth.onAuthStateChanged(user => {
+      if (user) {
+        this.setState({ user });
+      }
+    });
   }
 
   render() {
+    console.log(`App thinks firebase is: ${fireAuth.currentUser}`);
+    console.log(`App thinks current user is: ${this.state.user}`);
     return (
-      <Container fluid={false} style={globalStyles}>
-        <ToastContainer/>
+      <BrowserRouter>
+        <Switch>
+          <Route
+            path="/login"
+            render={() => (
+              <Login login={this.login} authed={fireAuth.currentUser} />
+            )}
+          />
+          <PrivateRoute
+            authed={fireAuth.currentUser}
+            exact={true}
+            path="/"
+            component={() => (
+              <Home logout={() => this.logout} user={this.state.user} />
+            )}
+          />
 
-        <Row>
-          <Col>
-            <Header />
-          </Col>
-        </Row>
-        <Row>
-          <Col md={{ span: 10, offset: 1 }} xs={{ span: 10 }}>
-            <MessageForm
-              showError={showError}
-              showSuccess={showSuccess}
-              showInfo={showInfo}
-            />
-          </Col>
-        </Row>
-      </Container>
+          <Route component={Page404} />
+        </Switch>
+      </BrowserRouter>
     );
   }
 }

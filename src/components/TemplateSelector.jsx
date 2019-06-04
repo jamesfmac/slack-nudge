@@ -1,9 +1,7 @@
 import React, { Component } from "react";
-import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
-import Button from "react-bootstrap/Button";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+
+
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLayerGroup } from "@fortawesome/free-solid-svg-icons";
@@ -16,7 +14,7 @@ const Templates = [
       formTouched: true,
       attachButton: true,
       recipients: "jamesm@stratejos.ai",
-      msgText: "Hey",
+      msgText: "Don't forget to connect Jira",
       msgBody:
         "Hey Jason,\n\n It looks like you might have had trouble connecting Jira? Once connected I can help you:\n\n    :fire: Get scheduled custom messages\n    :fire: Create and update issues from Slack\n    :fire: Unfurl Jira URL's in Slack\n\n Connecting is easy, just click below to get started.",
       btnLabel: ":zap: Connect Jira",
@@ -36,7 +34,7 @@ const Templates = [
       msgText: "Your trial ends soon ",
       msgBody:
         "Hey Jason,\n\n your 14 day trial of my teams plan comes to an end soon. If you are ready to upgrade please click below",
-      btnLabel: "View Invoice",
+        btnLabel: "View Invoice",
       btnURL:
         "https://app.stratejos.com/#/organisation/jira-integration-instructions",
       supportBody:
@@ -80,7 +78,7 @@ class TemplateSelector extends React.Component {
               >
                 Trial expiring
               </Dropdown.Item>
-              <Dropdown.Item href="#/action-3">Trial over</Dropdown.Item>
+          
             </Dropdown.Menu>
           </Dropdown>
      

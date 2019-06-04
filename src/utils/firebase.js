@@ -1,6 +1,6 @@
 
 
-import firebase from 'firebase/app';
+import firebase from 'firebase';
 import 'firebase/firestore';
 console.log(process.env.REACT_APP_FIREBASE_PROJECTID)
   const firebaseConfig = {
@@ -14,9 +14,11 @@ console.log(process.env.REACT_APP_FIREBASE_PROJECTID)
   };
   // Initialize Firebase
 
-  const Firebase = firebase.initializeApp(firebaseConfig) 
+  export const Firebase = firebase.initializeApp(firebaseConfig) 
 
   export const db = Firebase.firestore();
+  export const provider = new firebase.auth.GoogleAuthProvider();
+  export const fireAuth = firebase.auth();
 
 
 

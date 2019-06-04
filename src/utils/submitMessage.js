@@ -84,11 +84,9 @@ const submitMessage = function(
             }
           })
           .then(function(response) {
-            console.log(response);
             handleSuccess()
           })
           .catch(function(error) {
-            console.log(error);
             handleError(error)
           });
       } else {

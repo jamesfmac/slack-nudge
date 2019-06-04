@@ -7,21 +7,20 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Collapse from "react-bootstrap/Collapse";
+
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faMinus, faRedo } from "@fortawesome/free-solid-svg-icons";
+import {faRedo } from "@fortawesome/free-solid-svg-icons";
 import {
   faPaperPlane,
   faCommentDots
 } from "@fortawesome/free-regular-svg-icons";
-import { Heading } from "./styled";
 
 import TemplateSelector from "./TemplateSelector";
 
 import submitMessage from "../utils/submitMessage";
-import { StyledGroup } from "./Styled";
-import { FormGroup } from "react-bootstrap";
+import { StyledGroup, Heading } from "./Styled.jsx";
+
 
 class MessageForm extends React.Component {
   constructor(props) {
@@ -194,9 +193,9 @@ class MessageForm extends React.Component {
           </Form.Group>
           <Row>
             <Col md={{ span: 3 }}>
-              <div>
-                <span>Button </span>{" "}
-              </div>
+              
+                <Form.Label> Button </Form.Label>
+             
               {attachButton ? (
                 <div
                   onClick={() => this.handleButtonChange()}
@@ -237,7 +236,7 @@ class MessageForm extends React.Component {
                       type="text"
                       placeholder="Action"
                       onChange={this.handleChange}
-                      value={this.state.ms}
+                      value={this.state.btnLabel}
                       readOnly={
                         this.state.submissionPending | !this.state.attachButton
                       }
