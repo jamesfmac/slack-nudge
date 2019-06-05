@@ -3,9 +3,9 @@ import { Container } from "react-bootstrap";
 
 export const Heading = styled.h3`
   width: 100%;
-  text-align: center;
+  text-align: left;
   font-weight: 300;
-  margin-top: 20px;
+  margin-bottom: 20px
 `;
 
 export const StyledGroup = styled.div`
@@ -16,13 +16,12 @@ export const StyledGroup = styled.div`
   padding-right: 20px;
   margin-bottom: 10px;
   border-radius: 4px;
-  border-top: 2px solid #f67300;
+  border-top: 2px solid #007bff;
 `;
 
 export const StyledContainer = styled(Container).attrs({
   className: "container",
 })`
-
   color: rgba(0, 0, 0, 0.87);
   font-size: 1rem;
   font-weight: 400;

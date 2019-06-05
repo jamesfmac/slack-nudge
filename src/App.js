@@ -6,30 +6,15 @@ import { Login } from "./components/Login";
 
 import { Route, Link, BrowserRouter, Switch, Redirect } from "react-router-dom";
 import { Firebase, fireAuth, provider } from "./utils/firebase";
+import PrivateRoute from './utils/PrivateRoute'
 
-const PrivateRoute = function({ component: Component, authed, ...rest }) {
-  console.log(`authed: ${authed === true}`);
-  return (
-    <Route
-      {...rest}
-      render={props =>
-        authed != null ? (
-          <Component {...props} />
-        ) : (
-          <Redirect
-            to={{ pathname: "/login", state: { from: props.location } }}
-          />
-        )
-      }
-    />
-  );
-};
+
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: Firebase.auth().currentUser
+      user: JSON.parse(localStorage.getItem('authUser'))
     };
   }
 
@@ -42,20 +27,28 @@ class App extends React.Component {
     });
   };
 
+  handleSignIn = history => () => {
+    return fireAuth.signInWithRedirect(provider).then(() => {
+      return history.push("/");
+    });
+  };
+
   logout = () => {
     console.log(`Logging out`);
     fireAuth.signOut().then(() => {
       this.setState({
         user: null
       });
+      localStorage.removeItem('authUser');
     });
   };
 
   componentDidMount() {
-    console.log('mounted')
+    console.log("mounted");
     fireAuth.onAuthStateChanged(user => {
       if (user) {
         this.setState({ user });
+        localStorage.setItem('authUser', JSON.stringify(user));
       }
     });
   }
@@ -69,11 +62,11 @@ class App extends React.Component {
           <Route
             path="/login"
             render={() => (
-              <Login login={this.login} authed={fireAuth.currentUser} />
+              <Login login={this.login} authed={this.state.user != null} />
             )}
           />
           <PrivateRoute
-            authed={fireAuth.currentUser}
+            authed={this.state.user}
             exact={true}
             path="/"
             component={() => (

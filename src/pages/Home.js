@@ -1,5 +1,5 @@
 import React from "react";
-import {Row, Col, Button} from "react-bootstrap";
+import {Row, Col, Container } from "react-bootstrap";
 import Header from "../components/Header";
 import { StyledContainer} from '../components/Styled'
 import MessageForm from "../components/MessageForm";
@@ -11,23 +11,24 @@ class Home extends React.Component {
 
   render() {
     return (
-      <StyledContainer fluid={true}>
+      <Container fluid = {false} >
         <ToastContainer />
         <Row>
           <Col>
             <Header user = {this.props.user} logout = {this.props.logout} />
           </Col>
         </Row>
-        <Row>
-          <Col md={{ span: 10, offset: 1 }} xs={{ span: 10 }}>
+        <Row style={{marginTop: "20px",}} >
+          <Col>
             <MessageForm
               showError={showError}
               showSuccess={showSuccess}
               showInfo={showInfo}
+              user = {this.props.user}
             />
           </Col>
         </Row>
-      </StyledContainer>
+      </Container>
     );
   }
 }

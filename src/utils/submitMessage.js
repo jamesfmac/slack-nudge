@@ -8,7 +8,8 @@ const submitMessage = function(
   msgText,
   msgBody,
   supportBody,
-  btn
+  btn,
+  isTest
 ) {
   let message = {
     type: "section",
@@ -84,6 +85,8 @@ const submitMessage = function(
             }
           })
           .then(function(response) {
+            isTest? 
+            handleSuccess(true):
             handleSuccess()
           })
           .catch(function(error) {
@@ -91,10 +94,11 @@ const submitMessage = function(
           });
       } else {
         console.log(`No config found`)
-        handleError('Missing organization config');
+        handleError('Message failed. No organization config');
       }
     })
     .catch(error => {
+      handleError('Message failed. You are missing permissions')
       console.log(`Error getting config: ${error}`);
     });
 };
