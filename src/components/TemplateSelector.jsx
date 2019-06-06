@@ -16,7 +16,7 @@ const Templates = [
       recipients: "",
       msgText: "Don't forget to connect Jira",
       msgBody:
-        "Hey Jason,\n\n It looks like you might have had trouble connecting Jira? Once connected I can help you:\n\n    :fire: Get scheduled custom messages\n    :fire: Create and update issues from Slack\n    :fire: Unfurl Jira URL's in Slack\n\n Connecting is easy, just click below to get started.",
+        "Hey Jason,\n\n It looks like you might have had trouble connecting Jira? Once connected I can help you:\n\n    :fire: Get scheduled custom messages\n    :fire: Create and update Jira issues from Slack\n    :fire: Unfurl Jira URL's in Slack\n\n Connecting is easy, just click below to get started.",
       btnLabel: ":zap: Connect Jira",
       btnURL:
         "https://app.stratejos.com/#/organisation/jira-integration-instructions",

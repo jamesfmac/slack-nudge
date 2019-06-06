@@ -2,22 +2,21 @@ import React from "react";
 
 import Home from "./pages/Home.js";
 import { Page404 } from "./components/Page404";
-import { Login } from "./components/Login";
+import Login from "./pages/Login";
 
 import { Route, Link, BrowserRouter, Switch, Redirect } from "react-router-dom";
 import { Firebase, fireAuth, provider } from "./utils/firebase";
-import PrivateRoute from './utils/PrivateRoute'
-
-
+import PrivateRoute from "./utils/PrivateRoute";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: JSON.parse(localStorage.getItem('authUser'))
+      user: JSON.parse(localStorage.getItem("authUser"))
     };
   }
 
+ 
   login = () => {
     fireAuth.signInWithRedirect(provider).then(result => {
       const user = result.user;
@@ -29,33 +28,31 @@ class App extends React.Component {
 
   handleSignIn = history => () => {
     return fireAuth.signInWithRedirect(provider).then(() => {
+      console.log("pushing to /");
       return history.push("/");
     });
   };
 
   logout = () => {
-    console.log(`Logging out`);
     fireAuth.signOut().then(() => {
       this.setState({
         user: null
       });
-      localStorage.removeItem('authUser');
+      localStorage.removeItem("authUser");
     });
   };
 
   componentDidMount() {
-    console.log("mounted");
+
     fireAuth.onAuthStateChanged(user => {
       if (user) {
         this.setState({ user });
-        localStorage.setItem('authUser', JSON.stringify(user));
+        localStorage.setItem("authUser", JSON.stringify(user));
       }
     });
   }
 
   render() {
-    console.log(`App thinks firebase is: ${fireAuth.currentUser}`);
-    console.log(`App thinks current user is: ${this.state.user}`);
     return (
       <BrowserRouter>
         <Switch>

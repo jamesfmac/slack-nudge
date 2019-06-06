@@ -140,7 +140,7 @@ class MessageForm extends React.Component {
           <Row>
             <Col>
               <Heading>
-                BROADCAST <FontAwesomeIcon icon={faCommentDots} />
+                Broadcast <FontAwesomeIcon icon={faCommentDots} />
               </Heading>
             </Col>
           </Row>
