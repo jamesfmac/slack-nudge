@@ -1,5 +1,6 @@
 import axios from "./axios";
 import { db } from "./firebase";
+import {saveMessageAttempt} from './saveMessage'
 
 const submitMessage = function(
   handleError,
@@ -68,6 +69,14 @@ const submitMessage = function(
     ];
   }
   let blocks = [message].concat(button).concat(help);
+  let messageID = null
+
+  const setMessageID =function(ID){
+    messageID = ID;
+  }
+
+  saveMessageAttempt(msgText, blocks, recipients, setMessageID, isTest )
+  
 
   db.collection("config")
     .doc("stratejos")
@@ -85,21 +94,25 @@ const submitMessage = function(
             }
           })
           .then(function(response) {
+           console.log(`var is ${messageID}`)
+
             isTest? 
-            handleSuccess(true):
-            handleSuccess()
+            handleSuccess(messageID, response, isTest =true):
+
+            handleSuccess(messageID, response)
           })
           .catch(function(error) {
-            handleError(error)
+            console.log(error)
+            handleError(messageID, error)
           });
       } else {
         console.log(`No config found`)
-        handleError('Message failed. No organization config');
+        handleError(messageID,'Message failed. No organization config');
       }
     })
     .catch(error => {
       handleError('Message failed. You are missing permissions')
-      console.log(`Error getting config: ${error}`);
+      console.log(messageID,`Error getting config: ${error}`);
     });
 };
 

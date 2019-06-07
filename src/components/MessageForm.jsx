@@ -1,13 +1,6 @@
 import React from "react";
 
-import Form from "react-bootstrap/Form";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
-import DropdownButton from "react-bootstrap/DropdownButton";
-import Dropdown from "react-bootstrap/Dropdown";
-import Button from "react-bootstrap/Button";
-import Image from "react-bootstrap/Image";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import {Form, ButtonGroup, DropdownButton, Dropdown, Button, Row, Col} from "react-bootstrap";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRedo } from "@fortawesome/free-solid-svg-icons";
@@ -17,9 +10,9 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 
 import TemplateSelector from "./TemplateSelector";
-
 import submitMessage from "../utils/submitMessage";
 import { StyledGroup, Heading } from "./Styled.jsx";
+import {saveMessageResponse} from "../utils/saveMessage";
 
 class MessageForm extends React.Component {
   constructor(props) {
@@ -72,14 +65,16 @@ class MessageForm extends React.Component {
     });
   };
 
-  handleError = error => {
+  handleError = (messageID, error) => {
     this.setState({
       submissionPending: false
     });
+    saveMessageResponse(messageID,error)
     this.props.showError(`Failed. Message not sent`);
   };
 
-  handleSuccess = isTest => {
+  handleSuccess = (messageID, response, isTest) => {
+    saveMessageResponse(messageID,response, isTest)
     if (isTest) {
       this.props.showSuccess(`Sucess! Test  sent`);
       this.setState({
