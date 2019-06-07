@@ -4,19 +4,27 @@ import Nav from "react-bootstrap/Nav";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { LinkContainer } from "react-router-bootstrap";
+
 import { faCommentDots } from "@fortawesome/free-regular-svg-icons";
 
 class Header extends React.Component {
   render() {
     return (
       <Navbar bg="light" variant="light">
-        <Navbar.Brand href="#home">NUDGELY</Navbar.Brand>
+        <LinkContainer exact to="/">
+          <Navbar.Brand href="#home">NUDGELY</Navbar.Brand>
+        </LinkContainer>
         <Nav className="mr-auto">
-          <Nav.Link href="#broadcast">
-            Broadcast <FontAwesomeIcon icon={faCommentDots} />
-          </Nav.Link>
-          <Nav.Link href="#features">Outbox</Nav.Link>
-          <Nav.Link href="#pricing">Templates</Nav.Link>
+          <LinkContainer exact to="/">
+            <Nav.Link>Broadcast</Nav.Link>
+          </LinkContainer>
+          <LinkContainer to="/outbox">
+            <Nav.Link>Outbox</Nav.Link>
+          </LinkContainer>
+          <LinkContainer to="/templates">
+            <Nav.Link>Templates</Nav.Link>
+          </LinkContainer>
         </Nav>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">

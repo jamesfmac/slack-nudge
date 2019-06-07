@@ -3,6 +3,7 @@ import { db } from "./firebase";
 import {saveMessageAttempt} from './saveMessage'
 
 const submitMessage = function(
+  author,
   handleError,
   handleSuccess,
   recipients,
@@ -75,7 +76,7 @@ const submitMessage = function(
     messageID = ID;
   }
 
-  saveMessageAttempt(msgText, blocks, recipients, setMessageID, isTest )
+  saveMessageAttempt(author, msgText, blocks, recipients, setMessageID, isTest )
   
 
   db.collection("config")
@@ -94,26 +95,29 @@ const submitMessage = function(
             }
           })
           .then(function(response) {
-           console.log(`var is ${messageID}`)
-
+            console.log(response)
             isTest? 
             handleSuccess(messageID, response, isTest =true):
-
             handleSuccess(messageID, response)
           })
           .catch(function(error) {
-            console.log(error)
+            //handles the error response from axios
             handleError(messageID, error)
           });
-      } else {
-        console.log(`No config found`)
-        handleError(messageID,'Message failed. No organization config');
-      }
+      } 
     })
     .catch(error => {
+      //handles error from getting the doc.
       handleError('Message failed. You are missing permissions')
       console.log(messageID,`Error getting config: ${error}`);
     });
+    
+
+
+
+
+
+
 };
 
 export default submitMessage;

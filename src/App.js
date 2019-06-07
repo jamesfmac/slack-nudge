@@ -1,8 +1,10 @@
 import React from "react";
 
 import Home from "./pages/Home.js";
-import { Page404 } from "./components/Page404";
+import { Page404 } from "./pages/404";
 import Login from "./pages/Login";
+import Outbox from "./pages/Outbox"
+import Templates from "./pages/Templates"
 
 import { Route, Link, BrowserRouter, Switch, Redirect } from "react-router-dom";
 import { Firebase, fireAuth, provider } from "./utils/firebase";
@@ -68,6 +70,22 @@ class App extends React.Component {
             path="/"
             component={() => (
               <Home logout={() => this.logout} user={this.state.user} />
+            )}
+          />
+            <PrivateRoute
+            authed={this.state.user}
+            exact={true}
+            path="/outbox"
+            component={() => (
+              <Outbox logout={() => this.logout} user={this.state.user} />
+            )}
+          />
+            <PrivateRoute
+            authed={this.state.user}
+            exact={true}
+            path="/templates"
+            component={() => (
+              <Templates logout={() => this.logout} user={this.state.user} />
             )}
           />
 

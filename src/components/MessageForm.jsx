@@ -1,6 +1,14 @@
 import React from "react";
 
-import {Form, ButtonGroup, DropdownButton, Dropdown, Button, Row, Col} from "react-bootstrap";
+import {
+  Form,
+  ButtonGroup,
+  DropdownButton,
+  Dropdown,
+  Button,
+  Row,
+  Col
+} from "react-bootstrap";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRedo } from "@fortawesome/free-solid-svg-icons";
@@ -10,9 +18,10 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 
 import TemplateSelector from "./TemplateSelector";
-import submitMessage from "../utils/submitMessage";
 import { StyledGroup, Heading } from "./Styled.jsx";
-import {saveMessageResponse} from "../utils/saveMessage";
+import { saveMessageResponse } from "../utils/saveMessage";
+import submitMessage from "../utils/submitMessage";
+
 
 class MessageForm extends React.Component {
   constructor(props) {
@@ -28,6 +37,7 @@ class MessageForm extends React.Component {
       btnURL: "",
       supportBody: ""
     };
+    this.baseState = this.state;
   }
 
   handleApplyTemplate = formState => {
@@ -51,30 +61,20 @@ class MessageForm extends React.Component {
     });
   };
 
-  resetForm = e => {
-    this.setState({
-      submissionPending: false,
-      formTouched: false,
-      attachButton: true,
-      recipients: "",
-      msgText: "",
-      msgBody: "",
-      btnLabel: "",
-      btnURL: "",
-      supportBody: ""
-    });
+  resetForm = () => {
+    this.setState(this.baseState);
   };
 
   handleError = (messageID, error) => {
     this.setState({
       submissionPending: false
     });
-    saveMessageResponse(messageID,error)
+    saveMessageResponse(messageID, error.response);
     this.props.showError(`Failed. Message not sent`);
   };
 
   handleSuccess = (messageID, response, isTest) => {
-    saveMessageResponse(messageID,response, isTest)
+    saveMessageResponse(messageID, response, isTest);
     if (isTest) {
       this.props.showSuccess(`Sucess! Test  sent`);
       this.setState({
@@ -83,48 +83,38 @@ class MessageForm extends React.Component {
     } else {
       this.props.showSuccess(`Sucess! Message delivered`);
       this.resetForm();
-      //window.scroll({ top: 0, left: 0, behavior: "smooth" });
     }
   };
 
   handleSend = e => {
-    e.preventDefault();
-    this.props.showInfo("Sending message...");
+    let sendTo = null;
+    let isTest = e.target.title === 'Send Test'? true:false
+    if (isTest) {
+      this.props.showInfo("Sending test...");
+      sendTo = this.props.user.email;
+    } else {
+      this.props.showInfo("Sending message...");
+      sendTo = this.state.recipients;
+    }
     this.setState({
       submissionPending: true
     });
-    submitMessage(
-      this.handleError,
-      this.handleSuccess,
-      this.state.recipients,
-      this.state.msgText,
-      this.state.msgBody,
-      this.state.supportBody,
-      this.state.attachButton
-        ? { label: this.state.btnLabel, url: this.state.btnURL }
-        : null
-    );
-  };
 
-  handleTest = e => {
-    e.preventDefault();
-    this.props.showInfo("Sending test...");
-    this.setState({
-      submissionPending: true
-    });
     submitMessage(
+      this.props.user.email,
       this.handleError,
       this.handleSuccess,
-      this.props.user.email,
+      sendTo,
       this.state.msgText,
       this.state.msgBody,
       this.state.supportBody,
       this.state.attachButton
         ? { label: this.state.btnLabel, url: this.state.btnURL }
         : null,
-      true
+      isTest
     );
   };
+
 
   render() {
     const attachButton = this.state.attachButton;
@@ -346,8 +336,9 @@ class MessageForm extends React.Component {
                       >
                         <Dropdown.Item
                           eventKey="1"
+                          title = 'Send Test'
                           onMouseDown={e => e.preventDefault()}
-                          onClick={this.handleTest}
+                          onClick={this.handleSend}
                         >
                           Send test Slack
                         </Dropdown.Item>
