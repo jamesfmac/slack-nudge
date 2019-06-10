@@ -4,8 +4,12 @@ import {
   OverlayTrigger,
   Tooltip,
   Badge,
-  Spinner
+  Spinner,
+  Row,
+  Col
 } from "react-bootstrap";
+import { Heading } from "../components/Styled";
+import Moment from "react-moment";
 import { db } from "../utils/firebase";
 
 class MessageTable extends React.Component {
@@ -61,10 +65,11 @@ class MessageTable extends React.Component {
       })
       .map(message => (
         <tr key={message.key}>
-          <td>{new Date(message.submittedAt).toLocaleString()}</td>
-          <td>{message.recipients}</td>
-          <td>{message.author}</td>
-          <td>{message.message.text}</td>
+          <td>
+            <Moment unix fromNow>
+              {message.submittedAt}
+            </Moment>
+          </td>
           <td>
             <OverlayTrigger
               key={`overlay-${message.key}`}
@@ -85,26 +90,39 @@ class MessageTable extends React.Component {
               </Badge>
             </OverlayTrigger>
           </td>
-          <td>{message.key}</td>
+          <td>{message.recipients}</td>
+          <td>{message.author}</td>
+          <td>{message.message.text}</td>
         </tr>
       ));
 
-    return isLoading ? (
-      <Spinner animation="border" />
-    ) : (
-      <Table striped hover>
-        <thead>
-          <tr>
-            <th>Sent</th>
-            <th>Recipients</th>
-            <th>Author</th>
-            <th>Message</th>
-            <th>Status</th>
-            <th>Id</th>
-          </tr>
-        </thead>
-        <tbody>{items}</tbody>
-      </Table>
+    return (
+      <Row>
+        <Col md={{ span: 3 }}>
+          <Row>
+            <Col>
+              <Heading>Outbox</Heading>
+            </Col>
+          </Row>
+        </Col>
+        {isLoading ? (
+        <Spinner animation="border" />) : (
+        <Col md={{ span: 9 }}>
+          <Table striped hover>
+            <thead>
+              <tr>
+                <th>Sent</th>
+                <th>Status</th>
+                <th>Recipients</th>
+                <th>Author</th>
+                <th>Message</th>
+              </tr>
+            </thead>
+            <tbody>{items}</tbody>
+          </Table>
+        </Col>
+        )}
+      </Row>
     );
   }
 }

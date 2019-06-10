@@ -17,7 +17,7 @@ export const saveMessageAttempt = function(
       },
       recipients: [recipients],
       test: isTest || false,
-      submittedAt: new Date().getTime(),
+      submittedAt: Math.round(new Date().getTime()/1000) ,//create unix timestamp
       author: author
 
     })
@@ -42,7 +42,7 @@ export const saveMessageResponse = function(messageID, response) {
     .set(
       {
         response:{
-        responseTime: new Date().getTime(),
+        responseTime: Math.round(new Date().getTime()/1000), // create unix timestamp
         data: response.data,
         status: response.status
         }
