@@ -9,6 +9,7 @@ import {
   Row,
   Col
 } from "react-bootstrap";
+import { ReactMultiEmail, isEmail } from 'react-multi-email';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRedo } from "@fortawesome/free-solid-svg-icons";
@@ -22,6 +23,7 @@ import { StyledGroup, Heading } from "./Styled.jsx";
 import { saveMessageResponse } from "../utils/saveMessage";
 import submitMessage from "../utils/submitMessage";
 
+import 'react-multi-email/style.css';
 
 class MessageForm extends React.Component {
   constructor(props) {
@@ -30,7 +32,7 @@ class MessageForm extends React.Component {
       submissionPending: false,
       formTouched: false,
       attachButton: true,
-      recipients: "",
+      recipients: [],
       msgText: "",
       msgBody: "",
       btnLabel: "",
@@ -61,6 +63,16 @@ class MessageForm extends React.Component {
     });
   };
 
+  handleKeyDown = evt => {
+    if (["Enter", "Tab", ","].includes(evt.key)) {
+      evt.preventDefault();
+      var email = this.state.value.trim();
+      if (email) {
+        this.setState({ emails: [...this.state.emails, email], value: "" });
+      }
+    }
+  };
+
   resetForm = () => {
     this.setState(this.baseState);
   };
@@ -75,23 +87,22 @@ class MessageForm extends React.Component {
 
   handleSuccess = (messageID, response, isTest) => {
     saveMessageResponse(messageID, response, isTest);
-    if (isTest) {
-      this.props.showSuccess(`Sucess! Test  sent`);
-      this.setState({
-        submissionPending: false
-      });
-    } else {
-      this.props.showSuccess(`Sucess! Message delivered`);
-      this.resetForm();
-    }
+    isTest
+      ? this.props.showSuccess(`Sucess! Test  sent`)
+      : this.props.showSuccess(`Sucess! Message delivered`);
+
+    this.setState({
+      submissionPending: false,
+      recipients: ""
+    });
   };
 
   handleSend = e => {
     let sendTo = null;
-    let isTest = e.target.title === 'Send Test'? true:false
+    let isTest = e.target.title === "Send Test" ? true : false;
     if (isTest) {
       this.props.showInfo("Sending test...");
-      sendTo = this.props.user.email;
+      sendTo = [this.props.user.email];
     } else {
       this.props.showInfo("Sending message...");
       sendTo = this.state.recipients;
@@ -115,10 +126,10 @@ class MessageForm extends React.Component {
     );
   };
 
-
   render() {
     const attachButton = this.state.attachButton;
     const url = "https://api.slack.com/block-kit";
+    const emails = this.state.recipients;
     return (
       <Row>
         <Col md={{ span: 3 }}>
@@ -147,12 +158,29 @@ class MessageForm extends React.Component {
                     </Form.Text>
                   </Col>
                   <Col>
-                    <Form.Control
-                      type="email"
-                      placeholder="user@domain.com"
-                      onChange={this.handleChange}
-                      value={this.state.recipients}
-                      readOnly={this.state.submissionPending}
+                    <ReactMultiEmail
+                      placeholder= 'name@comapny.com'
+                      emails={emails}
+                      onChange={_emails => {
+                        this.setState({ emails: _emails });
+                      }}
+                      validateEmail={email => {
+                        return isEmail(email); // return boolean
+                      }}
+                      onKeyPress={e => console.log(e.which)}
+                      getLabel={(email, index, removeEmail) => {
+                        return (
+                          <div data-tag key={index}>
+                            {email}
+                            <span
+                              data-tag-handle
+                              onClick={() => removeEmail(index)}
+                            >
+                              ×
+                            </span>
+                          </div>
+                        );
+                      }}
                     />
                   </Col>
                 </Form.Row>
@@ -336,7 +364,7 @@ class MessageForm extends React.Component {
                       >
                         <Dropdown.Item
                           eventKey="1"
-                          title = 'Send Test'
+                          title="Send Test"
                           onMouseDown={e => e.preventDefault()}
                           onClick={this.handleSend}
                         >

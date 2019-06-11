@@ -75,7 +75,7 @@ const submitMessage = function(
   const setMessageID =function(ID){
     messageID = ID;
   }
-
+ console.log([recipients])
   saveMessageAttempt(author, msgText, blocks, recipients, setMessageID, isTest )
   
 
@@ -88,7 +88,7 @@ const submitMessage = function(
         axios
           .post("/messages/ondemand", {
             credentials,
-            recipients: [recipients],
+            recipients: recipients,
             message: {
               text: msgText,
               blocks: blocks

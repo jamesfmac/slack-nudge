@@ -1,5 +1,4 @@
 import { db } from "./firebase";
-import firebase from 'firebase';
 
 export const saveMessageAttempt = function(
   author,
@@ -15,7 +14,7 @@ export const saveMessageAttempt = function(
         text: msgText,
         blocks: blocks
       },
-      recipients: [recipients],
+      recipients: recipients,
       test: isTest || false,
       submittedAt: Math.round(new Date().getTime()/1000) ,//create unix timestamp
       author: author

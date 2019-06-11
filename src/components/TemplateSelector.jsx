@@ -13,7 +13,7 @@ const Templates = [
     formState: {
       formTouched: true,
       attachButton: true,
-      recipients: "",
+      
       msgText: "Don't forget to connect Jira",
       msgBody:
         "Hey Jason,\n\n It looks like you might have had trouble connecting Jira? Once connected I can help you:\n\n    :fire: Get scheduled custom messages\n    :fire: Create and update Jira issues from Slack\n    :fire: Unfurl Jira URL's in Slack\n\n Connecting is easy, just click below to get started.",
@@ -30,7 +30,7 @@ const Templates = [
     formState: {
       formTouched: true,
       attachButton: true,
-      recipients: "",
+      
       msgText: "Your trial ends soon ",
       msgBody:
         "Hey Jason,\n\n your 14 day trial of my teams plan comes to an end soon. If you are ready to upgrade please click below",
