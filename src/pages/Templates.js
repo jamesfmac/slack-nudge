@@ -1,8 +1,8 @@
 import React from "react";
 import {Row, Col, Container } from "react-bootstrap";
-import Header from "../components/Header";
-import MessageTable from '../components/MessageTable'
+import Header from "../components/Header"
 import { StyledContainer} from '../components/Styled'
+import TemplateForm from "../components/TemplateForm";
 import { showError, showSuccess, showInfo } from "../components/toasts/Toast";
 import { ToastContainer } from "react-toastify";
 
@@ -20,7 +20,12 @@ class Home extends React.Component {
         </Row>
         <Row style={{marginTop: "20px",}} >
           <Col>
-           <h2>Comming soon</h2>
+            <TemplateForm
+              showError={showError}
+              showSuccess={showSuccess}
+              showInfo={showInfo}
+              user = {this.props.user}
+            />
           </Col>
         </Row>
       </Container>
