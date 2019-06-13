@@ -9,7 +9,7 @@ import {
   Col,
   Form
 } from "react-bootstrap";
-import { Heading } from "../components/Styled";
+import { Heading, StyledTable } from "../components/Styled";
 import Moment from "react-moment";
 import { db } from "../utils/firebase";
 
@@ -140,7 +140,7 @@ class MessageTable extends React.Component {
           <Spinner animation="border" />
         ) : (
           <Col md={{ span: 9 }}>
-            <Table striped hover>
+            <StyledTable striped hover size= 'sm' borderless style={{boShadow:'1px 1px 1px #999'}}>
               <thead>
                 <tr>
                   <th>Sent</th>
@@ -151,7 +151,7 @@ class MessageTable extends React.Component {
                 </tr>
               </thead>
               <tbody>{items}</tbody>
-            </Table>
+            </StyledTable>
           </Col>
         )}
       </Row>

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Table from 'react-bootstrap/Table'
 import { Container } from "react-bootstrap";
 
 export const Heading = styled.h3`
@@ -7,6 +8,19 @@ export const Heading = styled.h3`
   font-weight: 300;
   margin-bottom: 20px
 `;
+
+export const StyledTable = styled(Table).attrs({
+  className: "table",
+})`
+box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.18);
+padding: 2px;
+padding-top: 20px;
+padding-left: 20px;
+padding-right: 20px;
+margin-bottom: 10px;
+border-radius: 4px;
+
+`
 
 export const StyledGroup = styled.div`
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.18);
