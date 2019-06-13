@@ -105,18 +105,15 @@ const submitMessage = function(
             handleError(messageID, error)
           });
       } 
+      else{
+        handleError('Message failed. Org config missing')
+      }
     })
     .catch(error => {
       //handles error from getting the doc.
       handleError('Message failed. You are missing permissions')
-      console.log(messageID,`Error getting config: ${error}`);
-    });
     
-
-
-
-
-
+    });
 
 };
 

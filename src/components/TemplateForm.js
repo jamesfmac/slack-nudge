@@ -107,7 +107,7 @@ class MessageForm extends React.Component {
           </Row>
           <Row>
            
-            <Table  hover>
+            <Table  hover borderless>
               
               <tbody>
                 <tr>
