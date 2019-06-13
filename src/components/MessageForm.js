@@ -80,12 +80,12 @@ class MessageForm extends React.Component {
   handleSuccess = (messageID, response, isTest) => {
     saveMessageResponse(messageID, response, isTest);
     isTest
-      ? this.props.showSuccess(`Sucess! Test  sent`)
+      ? this.props.showSuccess(`Sucess! Test sent`)
       : this.props.showSuccess(`Sucess! Message delivered`);
 
     this.setState({
       submissionPending: false,
-      recipients: ""
+      recipients: []
     });
   };
 

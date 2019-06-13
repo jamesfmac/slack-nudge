@@ -87,7 +87,7 @@ class MessageTable extends React.Component {
               overlay={
                 <Tooltip key={`tooltip-${message.key}`}>
                   {message.response.status !== 200
-                    ? message.response.data.message
+                    ? `Error: ${message.response.data.error} Message: ${message.response.data.message}`
                     : message.response.data}
                 </Tooltip>
               }
