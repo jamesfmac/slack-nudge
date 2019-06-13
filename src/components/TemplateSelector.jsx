@@ -26,6 +26,23 @@ const Templates = [
 
   {
     templateID: 124,
+    templateName: "Custom messages enabled",
+    formState: {
+      formTouched: true,
+      attachButton: true,
+      
+      msgText: "You now have access to custom messages :tada:",
+      msgBody:
+        ":tada: Custom messages have been enabled for your team! :tada:\n\n Create custom scheduled messages to:\n\n:fire: Get a daily update on progress\n:fire: Get weekly highlights on completed issues\n:fire: Get a daily update on bugs raised vs  completed ",
+        btnLabel: "Create my message",
+      btnURL:
+        "https://stratejos.ai/scheduled-messages/new?utm_source=slack&utm_medium=dm",
+      supportBody:
+        "Have questions? Email my friendly creators hello@stratejos.ai"
+    }
+  },
+  {
+    templateID: 125,
     templateName: "Trial Expiring?",
     formState: {
       formTouched: true,
@@ -54,6 +71,16 @@ class TemplateSelector extends React.Component {
   };
 
   render() {
+
+    let templates = Templates.map(template=>(
+      <Dropdown.Item onClick={e => {
+        this.applyTemplate(template.templateID);
+      }}>
+        {template.templateName}
+      </Dropdown.Item>
+    )
+
+    )
     return (
       
           <Dropdown onMouseDown={e => e.preventDefault()}>
@@ -62,23 +89,7 @@ class TemplateSelector extends React.Component {
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
-              <Dropdown.Item
-               
-                onClick={e => {
-                  this.applyTemplate(123);
-                }}
-              >
-                Connect Jira?
-              </Dropdown.Item>
-              <Dropdown.Item
-                templateid={124}
-                onClick={e => {
-                    this.applyTemplate(124);
-                }}
-              >
-                Trial expiring
-              </Dropdown.Item>
-          
+            {templates}
             </Dropdown.Menu>
           </Dropdown>
      
