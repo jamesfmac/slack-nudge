@@ -63,15 +63,7 @@ class MessageForm extends React.Component {
     });
   };
 
-  handleKeyDown = evt => {
-    if (["Enter", "Tab", ","].includes(evt.key)) {
-      evt.preventDefault();
-      var email = this.state.value.trim();
-      if (email) {
-        this.setState({ emails: [...this.state.emails, email], value: "" });
-      }
-    }
-  };
+
 
   resetForm = () => {
     this.setState(this.baseState);
@@ -162,7 +154,7 @@ class MessageForm extends React.Component {
                       placeholder= 'name@comapny.com'
                       emails={emails}
                       onChange={_emails => {
-                        this.setState({ emails: _emails });
+                        this.setState({ recipients: _emails });
                       }}
                       validateEmail={email => {
                         return isEmail(email); // return boolean
