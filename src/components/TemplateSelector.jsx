@@ -73,7 +73,7 @@ class TemplateSelector extends React.Component {
   render() {
 
     let templates = Templates.map(template=>(
-      <Dropdown.Item onClick={e => {
+      <Dropdown.Item key={template.id} onClick={e => {
         this.applyTemplate(template.templateID);
       }}>
         {template.templateName}

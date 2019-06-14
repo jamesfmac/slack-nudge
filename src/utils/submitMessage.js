@@ -75,7 +75,7 @@ const submitMessage = function(
   const setMessageID =function(ID){
     messageID = ID;
   }
- console.log([recipients])
+ console.log(recipients)
   saveMessageAttempt(author, msgText, blocks, recipients, setMessageID, isTest )
   
 

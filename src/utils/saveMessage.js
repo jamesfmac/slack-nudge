@@ -1,4 +1,5 @@
 import { db } from "./firebase";
+import { isEmail } from "react-multi-email";
 
 export const saveMessageAttempt = function(
   author,
@@ -8,21 +9,24 @@ export const saveMessageAttempt = function(
   setMessageID,
   isTest
 ) {
+
+const emails = recipients.map(recpient =>
+  recpient.email)
+
   db.collection("messages")
     .add({
       message: {
         text: msgText,
         blocks: blocks
       },
-      recipients: recipients,
+      recipients: emails,
       test: isTest || false,
-      submittedAt: Math.round(new Date().getTime()/1000) ,//create unix timestamp
+      submittedAt: Math.round(new Date().getTime() / 1000), //create unix timestamp
       author: author
-
     })
     .then(function(docRef) {
       console.log("Document written with ID: ", docRef.id);
-      setMessageID(docRef.id)
+      setMessageID(docRef.id);
     })
     .catch(function(error) {
       console.error("Error adding document: ", error);
@@ -30,23 +34,16 @@ export const saveMessageAttempt = function(
 };
 
 export const saveMessageResponse = function(messageID, response) {
- 
-
-
-
-
-
   db.collection("messages")
     .doc(messageID)
     .set(
       {
-        response:{
-        responseTime: Math.round(new Date().getTime()/1000), // create unix timestamp
-        data: response.data,
-        status: response.status
+        response: {
+          responseTime: Math.round(new Date().getTime() / 1000), // create unix timestamp
+          data: response.data,
+          status: response.status
         }
-      }
-     ,
+      },
       { merge: true }
     )
     .then(function() {

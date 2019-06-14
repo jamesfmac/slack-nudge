@@ -9,7 +9,7 @@ import {
   Row,
   Col
 } from "react-bootstrap";
-import { ReactMultiEmail, isEmail } from 'react-multi-email';
+import { ReactMultiEmail, isEmail } from "react-multi-email";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRedo } from "@fortawesome/free-solid-svg-icons";
@@ -23,7 +23,7 @@ import { StyledGroup, Heading } from "./Styled.js";
 import { saveMessageResponse } from "../utils/saveMessage";
 import submitMessage from "../utils/submitMessage";
 
-import 'react-multi-email/style.css';
+import "react-multi-email/style.css";
 
 class MessageForm extends React.Component {
   constructor(props) {
@@ -31,13 +31,16 @@ class MessageForm extends React.Component {
     this.state = {
       submissionPending: false,
       formTouched: false,
+      advancedRecipients: false,
       attachButton: true,
       recipients: [],
       msgText: "",
       msgBody: "",
       btnLabel: "",
       btnURL: "",
-      supportBody: ""
+      supportBody: "",
+      advOrgID: "",
+      advEmail: ""
     };
     this.baseState = this.state;
   }
@@ -45,6 +48,12 @@ class MessageForm extends React.Component {
   handleApplyTemplate = formState => {
     this.setState({
       ...formState
+    });
+  };
+
+  toggleAdvanced = () => {
+    this.setState({
+      advancedRecipients: !this.state.advancedRecipients
     });
   };
 
@@ -63,10 +72,17 @@ class MessageForm extends React.Component {
     });
   };
 
-
-
   resetForm = () => {
     this.setState(this.baseState);
+  };
+
+  formatRecients = emails => {
+    return emails.map(address => {
+      var object = {};
+      object["email"] = address;
+      console.log(object);
+      return object;
+    });
   };
 
   handleError = (messageID, error) => {
@@ -85,20 +101,30 @@ class MessageForm extends React.Component {
 
     this.setState({
       submissionPending: false,
-      recipients: []
+      recipients: [],
+      advEmail:"",
+      advOrgID: ""
     });
   };
 
   handleSend = e => {
+    e.preventDefault();
     let sendTo = null;
     let isTest = e.target.title === "Send Test" ? true : false;
     if (isTest) {
       this.props.showInfo("Sending test...");
-      sendTo = [this.props.user.email];
+      sendTo = [{email: this.props.user.email}];
+    } else if (this.state.advancedRecipients) {
+      this.props.showInfo("Sending message...");
+      sendTo = [
+        { email: this.state.advEmail, organisationId: this.state.advOrgID }
+      ];
     } else {
       this.props.showInfo("Sending message...");
-      sendTo = this.state.recipients;
+      sendTo = this.formatRecients(this.state.recipients);
     }
+    console.log(`Send to = ${sendTo}`);
+    
     this.setState({
       submissionPending: true
     });
@@ -150,30 +176,69 @@ class MessageForm extends React.Component {
                     </Form.Text>
                   </Col>
                   <Col>
-                    <ReactMultiEmail
-                      placeholder= 'name@comapny.com'
-                      emails={emails}
-                      onChange={_emails => {
-                        this.setState({ recipients: _emails });
-                      }}
-                      validateEmail={email => {
-                        return isEmail(email); // return boolean
-                      }}
-                      onKeyPress={e => console.log(e.which)}
-                      getLabel={(email, index, removeEmail) => {
-                        return (
-                          <div data-tag key={index}>
-                            {email}
-                            <span
-                              data-tag-handle
-                              onClick={() => removeEmail(index)}
-                            >
-                              ×
-                            </span>
-                          </div>
-                        );
-                      }}
-                    />
+                    {this.state.advancedRecipients ? (
+                      <Form.Row>
+                        <Col md={{ span: 8 }}>
+                          <Form.Group controlId="advEmail">
+                            <Form.Control
+                              type="email"
+                              placeholder="name@company.com"
+                              onChange={this.handleChange}
+                              value={this.state.advEmail}
+                              readOnly={this.state.submissionPending}
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col>
+                          <Form.Group controlId="advOrgID">
+                            <Form.Control
+                              type="text"
+                              placeholder="Org ID"
+                              onChange={this.handleChange}
+                              value={this.state.advOrgID}
+                              readOnly={this.state.submissionPending}
+                            />
+                          </Form.Group>
+                        </Col>
+                      </Form.Row>
+                    ) : (
+                      <ReactMultiEmail
+                        placeholder="name@comapny.com"
+                        emails={emails}
+                        onChange={_emails => {
+                          this.setState({ recipients: _emails });
+                        }}
+                        validateEmail={email => {
+                          return isEmail(email); // return boolean
+                        }}
+                        getLabel={(email, index, removeEmail) => {
+                          return (
+                            <div data-tag key={index}>
+                              {email}
+                              <span
+                                data-tag-handle
+                                onClick={() => removeEmail(index)}
+                              >
+                                ×
+                              </span>
+                            </div>
+                          );
+                        }}
+                      />
+                    )}
+                  </Col>
+                  <Col md={{ span: 1 }}>
+                    <Form.Text className="text-muted" style={{
+                          cursor: " pointer",
+                          
+                          display: "inline"
+                        }}>
+                      {" "}
+                      <span onClick={this.toggleAdvanced}>
+                        {" "}
+                        {this.state.advancedRecipients ? "Basic" : "Advanced"}
+                      </span>
+                    </Form.Text>
                   </Col>
                 </Form.Row>
               </Form.Group>

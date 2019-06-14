@@ -19,7 +19,8 @@ class MessageTable extends React.Component {
     this.state = {
       isLoading: true,
       messages: [],
-      showTestBroadcasts: false
+      showTestBroadcasts: false,
+      showFailedBroadcasts:true
     };
   }
 
@@ -69,6 +70,14 @@ class MessageTable extends React.Component {
           return message.test === false;
         }
       })
+      .filter(message => {
+        if (this.state.showFailedBroadcasts) {
+          return message;
+        } else {
+          return message.response.status !== 500;
+        }
+      })
+      
       .sort(function(a, b) {
         return b.submittedAt - a.submittedAt;
       })
@@ -132,6 +141,15 @@ class MessageTable extends React.Component {
                     this.setState({ showTestBroadcasts: e.target.checked })
                   }
                 />
+                   <Form.Check
+                  type="checkbox"
+                  id="checkbox-showTestBroadcasts"
+                  label="Include failed broadcasts"
+                  checked={this.state.showFailedBroadcasts}
+                  onChange={e =>
+                    this.setState({ showFailedBroadcasts: e.target.checked })
+                  }
+                />
               </Form>
             </Col>
           </Row>
@@ -140,12 +158,12 @@ class MessageTable extends React.Component {
           <Spinner animation="border" />
         ) : (
           <Col md={{ span: 9 }}>
-            <StyledTable striped hover size= 'sm' borderless style={{boShadow:'1px 1px 1px #999'}}>
+            <StyledTable striped hover borderless style={{boShadow:'1px 1px 1px #999'}}>
               <thead>
                 <tr>
                   <th>Sent</th>
                   <th>Status</th>
-                  <th>Recipients</th>
+                  <th style={{width: '200px'}}>Recipients</th>
                   <th>Author</th>
                   <th>Message</th>
                 </tr>
