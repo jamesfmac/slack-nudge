@@ -1,17 +1,23 @@
 import React from "react";
 
-import { Form, ButtonGroup, Table, Button, Row, Col, InputGroup, FormControl } from "react-bootstrap";
-
+import {
+  Form,
+  ButtonGroup,
+  Table,
+  Button,
+  Row,
+  Col,
+  InputGroup,
+  FormControl
+} from "react-bootstrap";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRedo } from "@fortawesome/free-solid-svg-icons";
-import {
-  faPaperPlane
-} from "@fortawesome/free-regular-svg-icons";
+
 
 import { StyledGroup, Heading } from "./Styled";
 import { saveMessageResponse } from "../utils/saveMessage";
-
+import TemplateSideBar from "./TemplateSideBar";
 
 import "react-multi-email/style.css";
 
@@ -22,7 +28,6 @@ class MessageForm extends React.Component {
       submissionPending: false,
       formTouched: false,
       attachButton: true,
-
       msgText: "",
       msgBody: "",
       btnLabel: "",
@@ -90,34 +95,7 @@ class MessageForm extends React.Component {
             </Col>
           </Row>
           <Row>
-            <Col>
-              <Form>
-              <InputGroup className="mb-3">
-    <FormControl
-      placeholder="New template"
-      aria-label="New template"
-      
-    />
-    <InputGroup.Append>
-      <Button variant="outline-secondary">Create</Button>
-    </InputGroup.Append>
-  </InputGroup>
-              </Form>
-            </Col>
-          </Row>
-          <Row>
-           
-            <Table  hover borderless>
-              
-              <tbody>
-                <tr>
-                  <td>Trial Expired</td>
-                </tr>
-                <tr>
-                  <td>Connect Jira</td>
-                </tr>
-              </tbody>
-            </Table>
+            <TemplateSideBar />
           </Row>
         </Col>
         <Col md={{ span: 9 }}>
@@ -289,7 +267,7 @@ class MessageForm extends React.Component {
                         onMouseDown={e => e.preventDefault()}
                         disabled={this.state.submissionPending}
                       >
-                        <FontAwesomeIcon icon={faPaperPlane} /> Save changes
+                      Save changes
                       </Button>
                     </ButtonGroup>
                   </Col>

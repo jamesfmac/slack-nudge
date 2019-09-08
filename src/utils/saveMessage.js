@@ -1,5 +1,5 @@
 import { db } from "./firebase";
-import { isEmail } from "react-multi-email";
+
 
 export const saveMessageAttempt = function(
   author,
@@ -22,7 +22,13 @@ const emails = recipients.map(recpient =>
       recipients: emails,
       test: isTest || false,
       submittedAt: Math.round(new Date().getTime() / 1000), //create unix timestamp
-      author: author
+      author: author,
+      response: {
+        data:"",
+        responseTime:"",
+        status:""
+      }
+
     })
     .then(function(docRef) {
       console.log("Document written with ID: ", docRef.id);

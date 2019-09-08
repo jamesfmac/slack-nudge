@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 
 
@@ -8,7 +8,7 @@ import { faLayerGroup } from "@fortawesome/free-solid-svg-icons";
 
 const Templates = [
   {
-    templateID: 123,
+    id: 123,
     templateName: "Need Help Connecting Jira?",
     formState: {
       formTouched: true,
@@ -25,7 +25,7 @@ const Templates = [
   },
 
   {
-    templateID: 124,
+    id: 124,
     templateName: "Custom messages enabled",
     formState: {
       formTouched: true,
@@ -42,7 +42,7 @@ const Templates = [
     }
   },
   {
-    templateID: 125,
+    id: 125,
     templateName: "Trial Expiring?",
     formState: {
       formTouched: true,

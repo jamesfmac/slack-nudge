@@ -95,15 +95,20 @@ class MessageForm extends React.Component {
 
   handleSuccess = (messageID, response, isTest) => {
     saveMessageResponse(messageID, response, isTest);
-    isTest
-      ? this.props.showSuccess(`Sucess! Test sent`)
-      : this.props.showSuccess(`Sucess! Message delivered`);
+    let resetRecipients = [];
+
+    if (isTest) {
+      this.props.showSuccess(`Sucess! Test sent`);
+      resetRecipients = this.state.recipients;
+    } else {
+      this.props.showSuccess(`Sucess! Message delivered`);
+    }
 
     this.setState({
       submissionPending: false,
-      recipients: [],
-      advEmail:"",
-      advOrgID: ""
+      advEmail: "",
+      advOrgID: "",
+      recipients: resetRecipients
     });
   };
 
@@ -113,7 +118,7 @@ class MessageForm extends React.Component {
     let isTest = e.target.title === "Send Test" ? true : false;
     if (isTest) {
       this.props.showInfo("Sending test...");
-      sendTo = [{email: this.props.user.email}];
+      sendTo = [{ email: this.props.user.email }];
     } else if (this.state.advancedRecipients) {
       this.props.showInfo("Sending message...");
       sendTo = [
@@ -124,7 +129,7 @@ class MessageForm extends React.Component {
       sendTo = this.formatRecients(this.state.recipients);
     }
     console.log(`Send to = ${sendTo}`);
-    
+
     this.setState({
       submissionPending: true
     });
@@ -228,11 +233,14 @@ class MessageForm extends React.Component {
                     )}
                   </Col>
                   <Col md={{ span: 1 }}>
-                    <Form.Text className="text-muted" style={{
-                          cursor: " pointer",
-                          
-                          display: "inline"
-                        }}>
+                    <Form.Text
+                      className="text-muted"
+                      style={{
+                        cursor: " pointer",
+
+                        display: "inline"
+                      }}
+                    >
                       {" "}
                       <span onClick={this.toggleAdvanced}>
                         {" "}

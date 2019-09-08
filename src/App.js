@@ -6,8 +6,8 @@ import Login from "./pages/Login";
 import Outbox from "./pages/Outbox"
 import Templates from "./pages/Templates"
 
-import { Route, Link, BrowserRouter, Switch, Redirect } from "react-router-dom";
-import { Firebase, fireAuth, provider } from "./utils/firebase";
+import { Route, BrowserRouter, Switch, } from "react-router-dom";
+import { fireAuth, provider } from "./utils/firebase";
 import PrivateRoute from "./utils/PrivateRoute";
 
 class App extends React.Component {

@@ -2,11 +2,11 @@ import React from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 
 import { LinkContainer } from "react-router-bootstrap";
 
-import { faCommentDots } from "@fortawesome/free-regular-svg-icons";
+
 
 class Header extends React.Component {
   render() {

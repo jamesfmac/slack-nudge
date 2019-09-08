@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Table,
   OverlayTrigger,
   Tooltip,
   Badge,
@@ -74,7 +73,7 @@ class MessageTable extends React.Component {
         if (this.state.showFailedBroadcasts) {
           return message;
         } else {
-          return message.response.status !== 500;
+          return message.response.status !== 500 || message.response.status === null;
         }
       })
       
@@ -88,17 +87,22 @@ class MessageTable extends React.Component {
               {message.submittedAt}
             </Moment>
           </td>
+        
           <td>
-          
+         {message.response ? (
             <OverlayTrigger
               key={`overlay-${message.key}`}
               placement="top"
+         
               overlay={
+                
                 <Tooltip key={`tooltip-${message.key}`}>
                   {message.response.status !== 200
                     ? `Error: ${message.response.data.error} Message: ${message.response.data.message}`
-                    : message.response.data}
+                    : message.response.data}:
+                    null
                 </Tooltip>
+            
               }
             >
               <Badge
@@ -108,7 +112,7 @@ class MessageTable extends React.Component {
                 {message.response.status}
               </Badge>
             </OverlayTrigger>
-           
+         ) : null}
           </td>
           <td>
           {message.test? <span><Badge variant='info'>Test</Badge> </span>:null}

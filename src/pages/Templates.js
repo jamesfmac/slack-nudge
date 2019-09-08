@@ -1,7 +1,7 @@
 import React from "react";
 import {Row, Col, Container } from "react-bootstrap";
 import Header from "../components/Header"
-import { StyledContainer} from '../components/Styled'
+
 import TemplateForm from "../components/TemplateForm";
 import { showError, showSuccess, showInfo } from "../components/toasts/Toast";
 import { ToastContainer } from "react-toastify";

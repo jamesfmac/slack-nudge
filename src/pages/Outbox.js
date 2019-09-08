@@ -3,8 +3,6 @@ import {Row, Col, Container } from "react-bootstrap";
 import Header from "../components/Header";
 import MessageTable from '../components/MessageTable'
 
-import { StyledContainer} from '../components/Styled'
-import { showError, showSuccess, showInfo } from "../components/toasts/Toast";
 import { ToastContainer } from "react-toastify";
 
 
