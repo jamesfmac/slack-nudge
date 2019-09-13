@@ -128,7 +128,7 @@ class MessageForm extends React.Component {
       this.props.showInfo("Sending message...");
       sendTo = this.formatRecients(this.state.recipients);
     }
-    console.log(`Send to = ${sendTo}`);
+   
 
     this.setState({
       submissionPending: true

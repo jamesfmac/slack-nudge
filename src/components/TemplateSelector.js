@@ -61,12 +61,13 @@ const Templates = [
 ];
 
 class TemplateSelector extends React.Component {
+
   applyTemplate = id => {
     console.log(id)
-    console.log( Templates.find(o => o.templateID === id) )
+    console.log( Templates.find(o => o.id === id) )
     this.props.applyTemplate(
         
-      Templates.find(o => o.templateID === id).formState
+      Templates.find(o => o.id === id).formState
     );
   };
 
@@ -74,7 +75,8 @@ class TemplateSelector extends React.Component {
 
     let templates = Templates.map(template=>(
       <Dropdown.Item key={template.id} onClick={e => {
-        this.applyTemplate(template.templateID);
+        console.log(template)
+        this.applyTemplate(template.id);
       }}>
         {template.templateName}
       </Dropdown.Item>

@@ -14,10 +14,10 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRedo } from "@fortawesome/free-solid-svg-icons";
 
-
 import { StyledGroup, Heading } from "./Styled";
 import { saveMessageResponse } from "../utils/saveMessage";
 import TemplateSideBar from "./TemplateSideBar";
+import { saveTemplate } from "../utils/saveTemplate";
 
 import "react-multi-email/style.css";
 
@@ -79,6 +79,17 @@ class MessageForm extends React.Component {
     this.setState({
       submissionPending: false,
       recipients: ""
+    });
+  };
+  handleSave = e => {
+    e.preventDefault();
+    console.log("handle save called");
+    saveTemplate("6ZrZfUL3Ls0i77yl6CkE", {
+      attachButton: this.state.attachButton,
+      msgText: this.state.msgText,
+      msgBody: this.state.msgBody,
+      btnURL: this.state.btnURL,
+      supportBody: this.state.supportBody
     });
   };
 
@@ -266,8 +277,9 @@ class MessageForm extends React.Component {
                         type="submit"
                         onMouseDown={e => e.preventDefault()}
                         disabled={this.state.submissionPending}
+                        onClick={this.handleSave}
                       >
-                      Save changes
+                        Save changes
                       </Button>
                     </ButtonGroup>
                   </Col>

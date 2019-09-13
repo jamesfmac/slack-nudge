@@ -3,10 +3,11 @@ import React from "react";
 import Home from "./pages/Home.js";
 import { Page404 } from "./pages/404";
 import Login from "./pages/Login";
-import Outbox from "./pages/Outbox"
-import Templates from "./pages/Templates"
+import Outbox from "./pages/Outbox";
+import Templates from "./pages/Templates";
+import EditTemplate from "./pages/EditTemplate";
 
-import { Route, BrowserRouter, Switch, } from "react-router-dom";
+import { Route, BrowserRouter, Switch } from "react-router-dom";
 import { fireAuth, provider } from "./utils/firebase";
 import PrivateRoute from "./utils/PrivateRoute";
 
@@ -18,7 +19,6 @@ class App extends React.Component {
     };
   }
 
- 
   login = () => {
     fireAuth.signInWithRedirect(provider).then(result => {
       const user = result.user;
@@ -45,7 +45,6 @@ class App extends React.Component {
   };
 
   componentDidMount() {
-
     fireAuth.onAuthStateChanged(user => {
       if (user) {
         this.setState({ user });
@@ -72,7 +71,7 @@ class App extends React.Component {
               <Home logout={() => this.logout} user={this.state.user} />
             )}
           />
-            <PrivateRoute
+          <PrivateRoute
             authed={this.state.user}
             exact={true}
             path="/outbox"
@@ -80,13 +79,21 @@ class App extends React.Component {
               <Outbox logout={() => this.logout} user={this.state.user} />
             )}
           />
-            <PrivateRoute
+          <PrivateRoute
             authed={this.state.user}
             exact={true}
             path="/templates"
-            component={() => (
-              <Templates logout={() => this.logout} user={this.state.user} />
-            )}
+            component={Templates}
+            logout={() => this.logout}
+            user={this.state.user}
+          />
+          <PrivateRoute
+            authed={this.state.user}
+            exact={true}
+            path="/templates/edit/:id"
+            component={EditTemplate}
+            logout={() => this.logout}
+            user={this.state.user}
           />
 
           <Route component={Page404} />

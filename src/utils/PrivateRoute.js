@@ -3,13 +3,15 @@ import React from 'react'
 import {Route, Redirect} from 'react-router-dom'
 
 const PrivateRoute = function({ component: Component, authed, ...rest }) {
+  console.log({...rest})
   
     return (
+  
       <Route
-        {...rest}
+      {...rest}
         render={props =>
           authed != null ? (
-            <Component {...props} />
+            <Component {...props} {...rest} />
           ) : (
             <Redirect
               to={{ pathname: "/login", state: { from: props.location } }}

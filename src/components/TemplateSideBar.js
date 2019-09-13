@@ -27,7 +27,9 @@ class TemplateSideBar extends React.Component {
       templates: []
     };
     this.baseState = this.state;
+    this.handleTemplateDelete = this.handleTemplateDelete.bind(this);
   }
+
   handleTemplateCreate = e => {
     e.preventDefault();
     db.collection("templates")
@@ -43,6 +45,19 @@ class TemplateSideBar extends React.Component {
       })
       .catch(error => {
         console.error("Error adding document: ", error);
+      });
+  };
+
+  handleTemplateDelete = e => {
+    console.log(e.currentTarget.id);
+    db.collection("templates")
+      .doc(e.currentTarget.id)
+      .delete()
+      .then( ()=> {
+        console.log("Document successfully deleted!");
+      })
+      .catch(error => {
+        console.error("Error removing document: ", error);
       });
   };
 
@@ -88,23 +103,28 @@ class TemplateSideBar extends React.Component {
           <StyledRow>
             <td>{template.name}</td>
             <td style={{ textAlign: "right" }}>
-              <span id="template-controls" style= {{display:"none"}}>
-                <OverlayTrigger key = {`trigger-copy-${template.id}`} placement='bottom' overlay={
-                  <Tooltip id = {`tooltip-copy-${template.id}`}>
-                    Copy
-                  </Tooltip>
-                }
+              <span id="template-controls" style={{ display: "none" }}>
+                <OverlayTrigger
+                  key={`trigger-copy-${template.key}`}
+                  placement="bottom"
+                  overlay={
+                    <Tooltip id={`tooltip-copy-${template.key}`}>Copy</Tooltip>
+                  }
                 >
-                <FontAwesomeIcon icon={faClone} />
-                </OverlayTrigger>
-                {" "}
-                <OverlayTrigger key= {`trigger-delte${template.id}`} placement= 'bottom' overlay= {
-                  <Tooltip key = {`tooltip-delete-${template.id}`}>
-                    Delete
-                  </Tooltip>
-                }
+                  <FontAwesomeIcon icon={faClone} />
+                </OverlayTrigger>{" "}
+                <OverlayTrigger
+                  key={`trigger-delete-${template.key}`}
+                  placement="bottom"
+                  overlay={
+                    <Tooltip key={`tooltip-delete-${template.key}`}>
+                      Delete
+                    </Tooltip>
+                  }
                 >
-                <FontAwesomeIcon icon={faTrashAlt} />
+                  <span onClick={this.handleTemplateDelete} id={template.key}>
+                    <FontAwesomeIcon icon={faTrashAlt} value={template.key} />
+                  </span>
                 </OverlayTrigger>
               </span>
             </td>
@@ -119,13 +139,15 @@ class TemplateSideBar extends React.Component {
               <FormGroup controlId="newTemplateName">
                 <InputGroup className="mb-3">
                   <FormControl
-                    placeholder="New"
-                    aria-label="New template"
+                    placeholder="Name"
+                    aria-label="name of new template"
                     value={this.state.newTemplateName}
                     onChange={this.handleChange}
+                    onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }}
                   />
                   <InputGroup.Append>
                     <Button
+                      type="button"
                       variant="outline-secondary"
                       onClick={this.handleTemplateCreate}
                       onMouseDown={e => e.preventDefault()}
