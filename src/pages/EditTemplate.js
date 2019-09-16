@@ -8,6 +8,12 @@ import { ToastContainer } from "react-toastify";
 
 
 class Home extends React.Component {
+
+handleApplyTemplate = formState => {
+    this.setState({
+      ...formState
+    });
+  };
  
     
   render() {
@@ -20,16 +26,13 @@ class Home extends React.Component {
           <Header user = {this.props.user} logout = {this.props.logout} />
           </Col>
         </Row>
-        <Row>
-          <Col>
-        <h1 style={{textAlign: "center", marginTop: "20px"}}>Template {this.props.match.params.id}</h1>
-        </Col>
-        </Row>
+       
         <Row style={{marginTop: "20px",}} >
           <Col>
          
          
             <TemplateForm
+              template = {this.props.match.params.id}
               showError={showError}
               showSuccess={showSuccess}
               showInfo={showInfo}

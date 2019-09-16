@@ -1,11 +1,15 @@
 import React from "react";
 import {Row, Col, Container } from "react-bootstrap";
 import Header from "../components/Header"
+import TemplateSideBar from '../components/TemplateSideBar'
+import { Heading } from "../components/Styled"
 
 import TemplateForm from "../components/TemplateForm";
 import { showError, showSuccess, showInfo } from "../components/toasts/Toast";
 import { ToastContainer } from "react-toastify";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRedo } from "@fortawesome/free-solid-svg-icons";
+import { faLayerGroup } from "@fortawesome/free-solid-svg-icons";
 
 class Home extends React.Component {
 
@@ -13,20 +17,25 @@ class Home extends React.Component {
     return (
       <Container fluid = {false} >
         <ToastContainer />
+        
+        
+
         <Row>
           <Col>
             <Header user = {this.props.user} logout = {this.props.logout} />
           </Col>
         </Row>
+       
+
         <Row style={{marginTop: "20px",}} >
-          <Col>
-            <TemplateForm
-              showError={showError}
-              showSuccess={showSuccess}
-              showInfo={showInfo}
-              user = {this.props.user}
-            />
+        <Col md={{ span: 3 }}>
+          
+              <Heading>
+                Templates <FontAwesomeIcon icon={faLayerGroup} />
+              </Heading>
+           
           </Col>
+        <TemplateSideBar history ={this.props.history}/>
         </Row>
       </Container>
     );

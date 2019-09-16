@@ -16,8 +16,8 @@ import { faRedo } from "@fortawesome/free-solid-svg-icons";
 
 import { StyledGroup, Heading } from "./Styled";
 import { saveMessageResponse } from "../utils/saveMessage";
-import TemplateSideBar from "./TemplateSideBar";
-import { saveTemplate } from "../utils/saveTemplate";
+import { db } from "../utils/firebase";
+import { updateTemplate } from "../utils/templates";
 
 import "react-multi-email/style.css";
 
@@ -32,7 +32,8 @@ class MessageForm extends React.Component {
       msgBody: "",
       btnLabel: "",
       btnURL: "",
-      supportBody: ""
+      supportBody: "",
+      templateName: "",
     };
     this.baseState = this.state;
   }
@@ -84,23 +85,58 @@ class MessageForm extends React.Component {
   handleSave = e => {
     e.preventDefault();
     console.log("handle save called");
-    saveTemplate("6ZrZfUL3Ls0i77yl6CkE", {
+    updateTemplate(this.props.template, {
       attachButton: this.state.attachButton,
       msgText: this.state.msgText,
       msgBody: this.state.msgBody,
       btnURL: this.state.btnURL,
+      btnLabel: this.state.btnLabel,
       supportBody: this.state.supportBody
     });
   };
+
+  componentWillMount() {
+    db.collection("templates")
+      .doc(this.props.template)
+      .get()
+      .then(doc=>{
+        if(doc.exists){
+          console.log("Template data:", doc.data())
+          const {
+            msgText,
+            msgBody,
+            btnLabel,
+            btnURL,
+            supportBody
+          } = doc.data().content;
+          const templateName = doc.data().name
+          this.setState({
+            msgText: msgText,
+            msgBody: msgBody,
+            btnLabel: btnLabel ,
+            btnURL: btnURL ,
+            supportBody: supportBody,
+            templateName: templateName
+          })
+        }else{
+          console.log('No template found')
+        }
+      })
+      .catch(function(error) {
+        console.log("Error getting template: ", error);
+      });
+  }
 
   render() {
     const attachButton = this.state.attachButton;
     const url = "https://api.slack.com/block-kit";
 
     return (
-      <Row>
-       
-        <Col md={{ span: 8,  offset: 2}}>
+        <Col md={{ span: 8, offset: 2 }}>
+          
+          <h1 style={{textAlign: "center", marginTop: "20px"}}>{this.state.templateName}</h1>
+            
+         
           <Form>
             <StyledGroup>
               <Form.Group controlId="msgText">
@@ -278,8 +314,10 @@ class MessageForm extends React.Component {
               </Form.Group>
             </StyledGroup>
           </Form>
+         
         </Col>
-      </Row>
+     
+     
     );
   }
 }

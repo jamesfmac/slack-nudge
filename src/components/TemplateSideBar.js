@@ -1,5 +1,8 @@
 import React from "react";
 import { db } from "../utils/firebase";
+import {createTemplate} from "../utils/templates"
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+
 
 import {
   OverlayTrigger,
@@ -32,21 +35,22 @@ class TemplateSideBar extends React.Component {
 
   handleTemplateCreate = e => {
     e.preventDefault();
-    db.collection("templates")
-      .add({
-        name: this.state.newTemplateName,
-        createdAt: Math.round(new Date().getTime() / 1000) //create unix timestamp
-      })
-      .then(docRef => {
-        console.log("Document written with ID: ", docRef.id);
-        this.setState({
-          newTemplateName: ""
-        });
-      })
-      .catch(error => {
-        console.error("Error adding document: ", error);
-      });
+    createTemplate(this.state.newTemplateName, this.handleCreateResponse)
   };
+
+  handleCreateResponse = (error,templateID)=>{
+    if(error){
+
+    }
+    else{
+      
+      console.log('redirect here')
+      this.props.history.push(`templates/edit/${templateID}`)
+
+    }
+
+  }
+
 
   handleTemplateDelete = e => {
     console.log(e.currentTarget.id);
@@ -101,7 +105,7 @@ class TemplateSideBar extends React.Component {
       .map(template => {
         return (
           <StyledRow>
-            <td>{template.name}</td>
+            <td><Link to={`/templates/edit/${template.key}`}>{template.name}</Link></td>
             <td style={{ textAlign: "right" }}>
               <span id="template-controls" style={{ display: "none" }}>
                 <OverlayTrigger
@@ -132,7 +136,7 @@ class TemplateSideBar extends React.Component {
         );
       });
     return (
-      <Col>
+      <Col md={{ span: 9}}>
         <Row>
           <Col>
             <Form>
@@ -152,7 +156,7 @@ class TemplateSideBar extends React.Component {
                       onClick={this.handleTemplateCreate}
                       onMouseDown={e => e.preventDefault()}
                     >
-                      Create
+                      Create Template
                     </Button>
                   </InputGroup.Append>
                 </InputGroup>
