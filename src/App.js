@@ -59,25 +59,27 @@ class App extends React.Component {
         <Switch>
           <Route
             path="/login"
-            render={() => (
-              <Login login={this.login} authed={this.state.user != null} />
-            )}
+            component={Login}
+            logout={() => this.logout}
+            user={this.state.user}
           />
           <PrivateRoute
             authed={this.state.user}
             exact={true}
             path="/"
-            component={() => (
-              <Home logout={() => this.logout} user={this.state.user} />
-            )}
+            component={Home}
+            logout={() => this.logout}
+            user={this.state.user}
+          
           />
           <PrivateRoute
             authed={this.state.user}
             exact={true}
             path="/outbox"
-            component={() => (
-              <Outbox logout={() => this.logout} user={this.state.user} />
-            )}
+            component={Outbox}
+            logout={() => this.logout}
+            user={this.state.user}
+           
           />
           <PrivateRoute
             authed={this.state.user}

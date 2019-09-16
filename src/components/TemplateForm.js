@@ -99,17 +99,8 @@ class MessageForm extends React.Component {
 
     return (
       <Row>
-        <Col md={{ span: 3 }}>
-          <Row>
-            <Col>
-              <Heading>Templates</Heading>
-            </Col>
-          </Row>
-          <Row>
-            <TemplateSideBar />
-          </Row>
-        </Col>
-        <Col md={{ span: 9 }}>
+       
+        <Col md={{ span: 8,  offset: 2}}>
           <Form>
             <StyledGroup>
               <Form.Group controlId="msgText">
@@ -279,7 +270,7 @@ class MessageForm extends React.Component {
                         disabled={this.state.submissionPending}
                         onClick={this.handleSave}
                       >
-                        Save changes
+                        Save and Exit
                       </Button>
                     </ButtonGroup>
                   </Col>

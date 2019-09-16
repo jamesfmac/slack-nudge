@@ -8,7 +8,7 @@ import { ToastContainer } from "react-toastify";
 
 
 class Home extends React.Component {
-
+ 
     
   render() {
     console.log(this.props)
@@ -17,12 +17,17 @@ class Home extends React.Component {
         <ToastContainer />
         <Row>
           <Col>
-            
+          <Header user = {this.props.user} logout = {this.props.logout} />
           </Col>
+        </Row>
+        <Row>
+          <Col>
+        <h1 style={{textAlign: "center", marginTop: "20px"}}>Template {this.props.match.params.id}</h1>
+        </Col>
         </Row>
         <Row style={{marginTop: "20px",}} >
           <Col>
-          <h1>Template {this.props.match.params.id}</h1>
+         
          
             <TemplateForm
               showError={showError}
