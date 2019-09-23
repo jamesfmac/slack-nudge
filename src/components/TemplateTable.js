@@ -22,7 +22,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { faTrashAlt, faClone } from "@fortawesome/free-regular-svg-icons";
 
-class TemplateSideBar extends React.Component {
+class TemplateTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -43,7 +43,6 @@ class TemplateSideBar extends React.Component {
 
     }
     else{
-      
       console.log('redirect here')
       this.props.history.push(`templates/edit/${templateID}`)
 
@@ -82,7 +81,8 @@ class TemplateSideBar extends React.Component {
           doc: doc, // DocumentSnapshot
           createdAt,
           name: name,
-          key: doc.id
+          key: doc.id,
+        
         });
       });
       this.setState({
@@ -107,28 +107,23 @@ class TemplateSideBar extends React.Component {
           <StyledRow>
             <td><Link to={`/templates/edit/${template.key}`}>{template.name}</Link></td>
             <td style={{ textAlign: "right" }}>
-              <span id="template-controls" style={{ display: "none" }}>
-                <OverlayTrigger
-                  key={`trigger-copy-${template.key}`}
-                  placement="bottom"
-                  overlay={
-                    <Tooltip id={`tooltip-copy-${template.key}`}>Copy</Tooltip>
-                  }
-                >
-                  <FontAwesomeIcon icon={faClone} />
-                </OverlayTrigger>{" "}
+              <span id="template-controls" >
+            
+             
                 <OverlayTrigger
                   key={`trigger-delete-${template.key}`}
                   placement="bottom"
                   overlay={
                     <Tooltip key={`tooltip-delete-${template.key}`}>
-                      Delete
+                      Permanently remove template
                     </Tooltip>
                   }
                 >
-                  <span onClick={this.handleTemplateDelete} id={template.key}>
-                    <FontAwesomeIcon icon={faTrashAlt} value={template.key} />
-                  </span>
+                  
+                  <Button variant="outline-danger" size = "sm" onClick={this.handleTemplateDelete} id={template.key}>
+                    <FontAwesomeIcon icon={faTrashAlt} value={template.key} /> Delete
+                  </Button>
+                  
                 </OverlayTrigger>
               </span>
             </td>
@@ -152,7 +147,7 @@ class TemplateSideBar extends React.Component {
                   <InputGroup.Append>
                     <Button
                       type="button"
-                      variant="outline-secondary"
+                      variant="primary"
                       onClick={this.handleTemplateCreate}
                       onMouseDown={e => e.preventDefault()}
                     >
@@ -165,7 +160,12 @@ class TemplateSideBar extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Table hover borderless>
+          <Table striped borderless>
+            <thead>
+             <tr>
+               <th>Name</th>
+             </tr>
+            </thead>
             <tbody>{templateList}</tbody>
           </Table>
         </Row>
@@ -174,4 +174,4 @@ class TemplateSideBar extends React.Component {
   }
 }
 
-export default TemplateSideBar;
+export default TemplateTable;

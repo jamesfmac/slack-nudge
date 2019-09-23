@@ -21,16 +21,9 @@ handleApplyTemplate = formState => {
     return (
       <Container fluid = {false} >
         <ToastContainer />
-        <Row>
-          <Col>
-          <Header user = {this.props.user} logout = {this.props.logout} />
-          </Col>
-        </Row>
        
-        <Row style={{marginTop: "20px",}} >
-          <Col>
-         
-         
+       
+        <Row >
             <TemplateForm
               template = {this.props.match.params.id}
               showError={showError}
@@ -38,7 +31,6 @@ handleApplyTemplate = formState => {
               showInfo={showInfo}
               user = {this.props.user}
             />
-          </Col>
         </Row>
       </Container>
     );

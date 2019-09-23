@@ -3,7 +3,7 @@
 import { db } from "./firebase";
 
 export const updateTemplate = function(
-   templateID, content
+   templateID, handleSuccess, content, 
   ) {
       console.log(`updating template ${templateID}`)
 
@@ -16,6 +16,7 @@ export const updateTemplate = function(
       )
       .then(function(docRef) {
         console.log(`Template updated: ${templateID}`);
+        handleSuccess(docRef)
      
       })
       .catch(function(error) {

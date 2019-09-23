@@ -1,5 +1,6 @@
 import React from "react";
 import Dropdown from "react-bootstrap/Dropdown";
+import { db } from "../utils/firebase";
 
 
 
@@ -62,23 +63,50 @@ const Templates = [
 
 class TemplateSelector extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      templates: []
+    };
+  }
+
+  componentDidMount() {
+    db.collection("templates").onSnapshot(querySnapshot => {
+      let templates = [];
+      querySnapshot.forEach(doc => {
+        const { name, content } = doc.data();
+        templates.push({
+          id:doc.id,
+         name,
+         content
+
+      }
+        );
+      });
+      this.setState({
+        templates: templates
+      })
+     console.log(templates)
+    });
+  }
+
   applyTemplate = id => {
     console.log(id)
-    console.log( Templates.find(o => o.id === id) )
+    console.log( this.state.templates.find(o => o.id === id) )
     this.props.applyTemplate(
         
-      Templates.find(o => o.id === id).formState
+      this.state.templates.find(o => o.id === id).content
     );
   };
 
   render() {
 
-    let templates = Templates.map(template=>(
+    let templates = this.state.templates.map(template=>(
       <Dropdown.Item key={template.id} onClick={e => {
-        console.log(template)
+     
         this.applyTemplate(template.id);
       }}>
-        {template.templateName}
+        {template.name}
       </Dropdown.Item>
     )
 

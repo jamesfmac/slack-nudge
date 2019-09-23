@@ -73,7 +73,14 @@ class MessageTable extends React.Component {
         if (this.state.showFailedBroadcasts) {
           return message;
         } else {
-          return message.response.status !== 500 || message.response.status === null;
+          //handle records missing responses
+          console.log(message.response)
+          if (message.response){
+          return message.response.status == 200 || message.response.status === null;
+          }
+          else{
+            return message;
+          }
         }
       })
       
@@ -158,9 +165,7 @@ class MessageTable extends React.Component {
             </Col>
           </Row>
         </Col>
-        {isLoading ? (
-          <Spinner animation="border" />
-        ) : (
+       
           <Col md={{ span: 9 }}>
             <StyledTable striped hover borderless style={{boShadow:'1px 1px 1px #999'}}>
               <thead>
@@ -172,10 +177,15 @@ class MessageTable extends React.Component {
                   <th>Message</th>
                 </tr>
               </thead>
-              <tbody>{items}</tbody>
+              {isLoading ? (
+          <Spinner animation="border" />
+        ) : 
+
+              (
+              <tbody>{items}</tbody>)}
             </StyledTable>
           </Col>
-        )}
+        
       </Row>
     );
   }

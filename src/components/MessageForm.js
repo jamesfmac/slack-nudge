@@ -47,7 +47,8 @@ class MessageForm extends React.Component {
 
   handleApplyTemplate = formState => {
     this.setState({
-      ...formState
+      ...formState,
+      formTouched:true
     });
   };
 

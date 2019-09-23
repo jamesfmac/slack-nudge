@@ -1,7 +1,7 @@
 import React from "react";
 import {Row, Col, Container } from "react-bootstrap";
 import Header from "../components/Header"
-import TemplateSideBar from '../components/TemplateSideBar'
+import TemplateTable from "../components/TemplateTable"
 import { Heading } from "../components/Styled"
 
 import TemplateForm from "../components/TemplateForm";
@@ -35,7 +35,7 @@ class Home extends React.Component {
               </Heading>
            
           </Col>
-        <TemplateSideBar history ={this.props.history}/>
+        <TemplateTable history ={this.props.history}/>
         </Row>
       </Container>
     );
