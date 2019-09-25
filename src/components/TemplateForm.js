@@ -1,29 +1,28 @@
 import React from "react";
 
 import {
-  Nav,
-  Navbar,
+  DropdownButton,
+  Dropdown,
   Form,
   ButtonGroup,
   Button,
   Row,
   Col,
-  InputGroup,
-  FormControl
+
 } from "react-bootstrap";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
-
-import { StyledForm, StyledHeader } from "./Styled";
-import { saveMessageResponse } from "../utils/saveMessage";
-import { db } from "../utils/firebase";
-import { updateTemplate } from "../utils/templates";
+import "react-multi-email/style.css";
 import Skeleton from "react-loading-skeleton";
 import { withRouter } from "react-router";
 
-import "react-multi-email/style.css";
-import Header from "./Header";
+import { StyledForm, StyledHeader } from "./Styled";
+
+import { db } from "../utils/firebase";
+import { updateTemplate } from "../utils/templates";
+import submitMessage from "../utils/submitMessage";
+import { saveMessageResponse } from "../utils/saveMessage";
 
 class TemplateForm extends React.Component {
   constructor(props) {
@@ -73,6 +72,51 @@ class TemplateForm extends React.Component {
 
   handleSuccess = docRef => {
     this.props.history.push("/templates");
+  };
+
+  handleSendSuccess = (messageID, response, isTest) => {
+    saveMessageResponse(messageID, response, isTest);
+    let resetRecipients = [];
+
+    if (isTest) {
+      this.props.showSuccess(`Sucess! Test sent`);
+      resetRecipients = this.state.recipients;
+    } else {
+      this.props.showSuccess(`Sucess! Message delivered`);
+    }
+
+    this.setState({
+      submissionPending: false,
+      advEmail: "",
+      advOrgID: "",
+      recipients: resetRecipients
+    });
+  };
+
+  handleSend = e => {
+    e.preventDefault();
+    let sendTo = null;
+    const isTest = true;
+      this.props.showInfo("Sending test...");
+      sendTo = [{ email: this.props.user.email }];
+      
+    this.setState({
+      submissionPending: true
+    });
+
+    submitMessage(
+      this.props.user.email,
+      this.handleError,
+      this.handleSendSuccess,
+      sendTo,
+      this.state.msgText,
+      this.state.msgBody,
+      this.state.supportBody,
+      this.state.attachButton
+        ? { label: this.state.btnLabel, url: this.state.btnURL }
+        : null,
+      isTest
+    );
   };
 
   handleSave = e => {
@@ -146,17 +190,33 @@ class TemplateForm extends React.Component {
          
 
           <Col>
-            <ButtonGroup className="float-right">
-              <Button
-                variant="primary"
-                type="submit"
-                onMouseDown={e => e.preventDefault()}
-                disabled={this.state.submissionPending}
-                onClick={this.handleSave}
-              >
-                Save and Exit
-              </Button>
-            </ButtonGroup>
+          <ButtonGroup className="float-right">
+                      <Button
+                        variant="primary"
+                        type="submit"
+                        onClick={this.handleSave}
+                        onMouseDown={e => e.preventDefault()}
+                        disabled={this.state.submissionPending}
+                      >
+                         Save and Exit
+                      </Button>
+                      <DropdownButton
+                        as={ButtonGroup}
+                        id="bg-nested-dropdown"
+                        title=""
+                        style={{ borderLeft: `1px solid #004ad3` }}
+                        disabled={this.state.submissionPending}
+                      >
+                        <Dropdown.Item
+                          eventKey="1"
+                          title="Send Test"
+                          onMouseDown={e => e.preventDefault()}
+                          onClick={this.handleSend}
+                        >
+                          Send test
+                        </Dropdown.Item>
+                      </DropdownButton>
+                    </ButtonGroup>
           </Col>
         </StyledHeader>
         <Row>
