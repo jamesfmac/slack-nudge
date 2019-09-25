@@ -13,29 +13,19 @@ const submitMessage = function(
   btn,
   isTest
 ) {
-  let message = {
+
+  let message = [ {
     type: "section",
     text: {
       type: "mrkdwn",
       text: msgBody
     }
-  };
+  }];
 
-  let help = [
-    {
-      type: "divider"
-    },
-    {
-      type: "section",
-      text: {
-        type: "mrkdwn",
-        text: supportBody
-      }
-    }
-  ];
-  let button = [];
-  if (btn) {
-    button = [
+ 
+ 
+  if (btn)  {
+    message.concat([
       {
         type: "section",
         text: {
@@ -67,17 +57,31 @@ const submitMessage = function(
           emoji: true
         }
       }
-    ];
+    ]);
   }
-  let blocks = [message].concat(button).concat(help);
+
+  if (supportBody.length >0) {message.concat([
+    {
+      type: "divider"
+    },
+    {
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: supportBody
+      }
+    }
+  ]
+  )};
+  let blocks = message;
   let messageID = null
 
   const setMessageID =function(ID){
     messageID = ID;
   }
- console.log(recipients)
+
   saveMessageAttempt(author, msgText, blocks, recipients, setMessageID, isTest )
-  
+  console.log(blocks)
 
   db.collection("config")
     .doc("stratejos")

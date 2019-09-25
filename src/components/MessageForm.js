@@ -134,7 +134,7 @@ class MessageForm extends React.Component {
     this.setState({
       submissionPending: true
     });
-
+console.log(`attache button: ${this.state.attachButton}`)
     submitMessage(
       this.props.user.email,
       this.handleError,
