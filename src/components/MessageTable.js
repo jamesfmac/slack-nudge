@@ -8,8 +8,11 @@ import {
   Col,
   Form
 } from "react-bootstrap";
-import { Heading, StyledTable } from "../components/Styled";
+import Skeleton from "react-loading-skeleton";
 import Moment from "react-moment";
+
+import { Heading, StyledTable } from "../components/Styled";
+
 import { db } from "../utils/firebase";
 
 class MessageTable extends React.Component {
@@ -19,7 +22,7 @@ class MessageTable extends React.Component {
       isLoading: true,
       messages: [],
       showTestBroadcasts: false,
-      showFailedBroadcasts:true
+      showFailedBroadcasts: true
     };
   }
 
@@ -74,16 +77,17 @@ class MessageTable extends React.Component {
           return message;
         } else {
           //handle records missing responses
-          console.log(message.response)
-          if (message.response){
-          return message.response.status == 200 || message.response.status === null;
-          }
-          else{
+       
+          if (message.response) {
+            return (
+              message.response.status === 200 ||
+              message.response.status === null
+            );
+          } else {
             return message;
           }
         }
       })
-      
       .sort(function(a, b) {
         return b.submittedAt - a.submittedAt;
       })
@@ -94,43 +98,62 @@ class MessageTable extends React.Component {
               {message.submittedAt}
             </Moment>
           </td>
-        
+
           <td>
-         {message.response ? (
-            <OverlayTrigger
-              key={`overlay-${message.key}`}
-              placement="top"
-         
-              overlay={
-                
-                <Tooltip key={`tooltip-${message.key}`}>
-                  {message.response.status !== 200
-                    ? `Error: ${message.response.data.error} Message: ${message.response.data.message}`
-                    : message.response.data}:
-                    null
-                </Tooltip>
-            
-              }
-            >
-              <Badge
-                pill
-                variant={message.response.status !== 200 ? "danger" : "success"}
+            {message.response ? (
+              <OverlayTrigger
+                key={`overlay-${message.key}`}
+                placement="top"
+                overlay={
+                  <Tooltip key={`tooltip-${message.key}`}>
+                    {message.response.status !== 200
+                      ? `Error: ${message.response.data.error} Message: ${message.response.data.message}`
+                      : message.response.data}
+                    : null
+                  </Tooltip>
+                }
               >
-                {message.response.status}
-              </Badge>
-            </OverlayTrigger>
-         ) : null}
+                <Badge
+                  pill
+                  variant={
+                    message.response.status !== 200 ? "danger" : "success"
+                  }
+                >
+                  {message.response.status}
+                </Badge>
+              </OverlayTrigger>
+            ) : null}
           </td>
           <td>
-          {message.test? <span><Badge variant='info'>Test</Badge> </span>:null}
+            {message.test ? (
+              <span>
+                <Badge variant="info">Test</Badge>{" "}
+              </span>
+            ) : null}
             {message.recipients.map(recipient => (
-              <span key={`message-${message.idmessage} recipient- ${recipient}`}>{recipient} </span>
+              <span
+                key={`message-${message.idmessage} recipient- ${recipient}`}
+              >
+                {recipient}{" "}
+              </span>
             ))}
           </td>
           <td>{message.author}</td>
           <td>{message.message.text}</td>
         </tr>
       ));
+
+      let skeletonRows = Array(20).fill(<tr>
+        <td><Skeleton width={40}/></td>
+            <td><Skeleton  width={40} /></td>
+            <td><Skeleton /></td>
+            <td><Skeleton /></td>
+            <td><Skeleton  /></td>
+      </tr>)
+    
+    
+     
+      console.log(items)
 
     return (
       <Row>
@@ -152,7 +175,7 @@ class MessageTable extends React.Component {
                     this.setState({ showTestBroadcasts: e.target.checked })
                   }
                 />
-                   <Form.Check
+                <Form.Check
                   type="checkbox"
                   id="checkbox-showTestBroadcasts"
                   label="Include failed broadcasts"
@@ -165,27 +188,32 @@ class MessageTable extends React.Component {
             </Col>
           </Row>
         </Col>
-       
-          <Col md={{ span: 9 }}>
-            <StyledTable striped hover borderless style={{boShadow:'1px 1px 1px #999'}}>
-              <thead>
-                <tr>
-                  <th>Sent</th>
-                  <th>Status</th>
-                  <th style={{width: '200px'}}>Recipients</th>
-                  <th>Author</th>
-                  <th>Message</th>
-                </tr>
-              </thead>
-              {isLoading ? (
-          <Spinner animation="border" />
-        ) : 
 
-              (
-              <tbody>{items}</tbody>)}
-            </StyledTable>
-          </Col>
-        
+        <Col md={{ span: 9 }}>
+          <StyledTable
+            striped
+            hover
+            borderless
+            style={{ boShadow: "1px 1px 1px #999" }}
+          >
+            <thead>
+              <tr>
+                <th>Sent</th>
+                <th>Status</th>
+                <th style={{ width: "200px" }}>Recipients</th>
+                <th>Author</th>
+                <th>Message</th>
+              </tr>
+            </thead>
+            {isLoading ? (
+              <tbody>
+                {skeletonRows}
+              </tbody>
+            ) : (
+              <tbody>{items}</tbody>
+            )}
+          </StyledTable>
+        </Col>
       </Row>
     );
   }

@@ -1,6 +1,6 @@
 import axios from "./axios";
 import { db } from "./firebase";
-import {saveMessageAttempt} from './saveMessage'
+import { saveMessageAttempt } from "./saveMessage";
 
 const submitMessage = function(
   author,
@@ -13,18 +13,17 @@ const submitMessage = function(
   btn,
   isTest
 ) {
-
-  let message = [ {
-    type: "section",
-    text: {
-      type: "mrkdwn",
-      text: msgBody
+  let message = [
+    {
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: msgBody
+      }
     }
-  }];
+  ];
 
- 
- 
-  if (btn)  {
+  if (btn) {
     message.concat([
       {
         type: "section",
@@ -60,28 +59,29 @@ const submitMessage = function(
     ]);
   }
 
-  if (supportBody.length >0) {message.concat([
-    {
-      type: "divider"
-    },
-    {
-      type: "section",
-      text: {
-        type: "mrkdwn",
-        text: supportBody
+  if (supportBody.length > 0) {
+    message.concat([
+      {
+        type: "divider"
+      },
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: supportBody
+        }
       }
-    }
-  ]
-  )};
-  let blocks = message;
-  let messageID = null
-
-  const setMessageID =function(ID){
-    messageID = ID;
+    ]);
   }
+  let blocks = message;
+  let messageID = null;
 
-  saveMessageAttempt(author, msgText, blocks, recipients, setMessageID, isTest )
-  console.log(blocks)
+  const setMessageID = function(ID) {
+    messageID = ID;
+  };
+
+  saveMessageAttempt(author, msgText, blocks, recipients, setMessageID, isTest);
+  console.log(blocks);
 
   db.collection("config")
     .doc("stratejos")
@@ -99,26 +99,23 @@ const submitMessage = function(
             }
           })
           .then(function(response) {
-            console.log(response)
-            isTest? 
-            handleSuccess(messageID, response, isTest =true):
-            handleSuccess(messageID, response)
+            console.log(response);
+            isTest
+              ? handleSuccess(messageID, response, (isTest = true))
+              : handleSuccess(messageID, response);
           })
           .catch(function(error) {
             //handles the error response from axios
-            handleError(messageID, error)
+            handleError(messageID, error);
           });
-      } 
-      else{
-        handleError('Message failed. Org config missing')
+      } else {
+        handleError("Message failed. Org config missing");
       }
     })
     .catch(error => {
       //handles error from getting the doc.
-      handleError('Message failed. You are missing permissions')
-    
+      handleError("Message failed. You are missing permissions");
     });
-
 };
 
 export default submitMessage;
