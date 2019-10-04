@@ -35,8 +35,7 @@ class TemplateSelector extends React.Component {
   }
 
   applyTemplate = id => {
-    console.log(id)
-    console.log( this.state.templates.find(o => o.id === id) )
+
     this.props.applyTemplate(
         
       this.state.templates.find(o => o.id === id).content

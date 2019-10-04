@@ -20,20 +20,24 @@ class App extends React.Component {
   }
 
   login = () => {
+    console.log(`login attempt`);
     fireAuth.signInWithRedirect(provider).then(result => {
       const user = result.user;
       this.setState({
         user
       });
+      localStorage.setItem("authUser", JSON.stringify(user));
     });
   };
 
+  /* think this is an exanple from someone else
   handleSignIn = history => () => {
     return fireAuth.signInWithRedirect(provider).then(() => {
       console.log("pushing to /");
       return history.push("/");
     });
   };
+  */
 
   logout = () => {
     fireAuth.signOut().then(() => {
@@ -46,6 +50,7 @@ class App extends React.Component {
 
   componentDidMount() {
     fireAuth.onAuthStateChanged(user => {
+  
       if (user) {
         this.setState({ user });
         localStorage.setItem("authUser", JSON.stringify(user));
@@ -59,10 +64,9 @@ class App extends React.Component {
         <Switch>
           <Route
             path="/login"
-            component={Login}
-            logout={() => this.logout}
-            user={this.state.user}
+            render={() => <Login login={this.login} authed={this.state.user} />}
           />
+
           <PrivateRoute
             authed={this.state.user}
             exact={true}
@@ -70,7 +74,6 @@ class App extends React.Component {
             component={Home}
             logout={() => this.logout}
             user={this.state.user}
-          
           />
           <PrivateRoute
             authed={this.state.user}
@@ -79,7 +82,6 @@ class App extends React.Component {
             component={Outbox}
             logout={() => this.logout}
             user={this.state.user}
-           
           />
           <PrivateRoute
             authed={this.state.user}

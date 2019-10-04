@@ -3,8 +3,10 @@ import { Row, Col, Card } from "react-bootstrap";
 import { StyledContainer } from "../components/Styled";
 import LoginButton from "../components/LoginButton";
 
+
 class Login extends React.Component {
-  render() {
+  render(){
+
     return (
       <StyledContainer className = "h100">
         <Row className >

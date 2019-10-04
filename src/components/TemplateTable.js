@@ -1,7 +1,7 @@
 import React from "react";
 import { db } from "../utils/firebase";
 import {createTemplate} from "../utils/templates"
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 
 import {
@@ -16,15 +16,16 @@ import {
   FormControl,
   FormGroup
 } from "react-bootstrap";
-import { StyledRow } from "./Styled.js";
+
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { faTrashAlt, faClone } from "@fortawesome/free-regular-svg-icons";
+import { faTrashAlt} from "@fortawesome/free-regular-svg-icons";
 
 class TemplateTable extends React.Component {
   constructor(props) {
     super(props);
+    this.unsubscribe = null
     this.state = {
       newTemplateName: "",
       templates: []
@@ -43,16 +44,32 @@ class TemplateTable extends React.Component {
 
     }
     else{
-      console.log('redirect here')
+  
       this.props.history.push(`templates/edit/${templateID}`)
 
     }
 
   }
+  onCollectionUpdate = (querySnapshot) => {
+    let templates = [];
+    querySnapshot.forEach(doc => {
+      const { name, createdAt } = doc.data();
+      templates.push({
+        doc: doc, // DocumentSnapshot
+        createdAt,
+        name: name,
+        key: doc.id,
+      
+      });
+    });
+    this.setState({
+      templates: templates
+    });
+  }
 
 
   handleTemplateDelete = e => {
-    console.log(e.currentTarget.id);
+
     db.collection("templates")
       .doc(e.currentTarget.id)
       .delete()
@@ -73,22 +90,12 @@ class TemplateTable extends React.Component {
   handleTemplateSelection = e => {};
 
   componentDidMount() {
-    db.collection("templates").onSnapshot(querySnapshot => {
-      let templates = [];
-      querySnapshot.forEach(doc => {
-        const { name, createdAt } = doc.data();
-        templates.push({
-          doc: doc, // DocumentSnapshot
-          createdAt,
-          name: name,
-          key: doc.id,
-        
-        });
-      });
-      this.setState({
-        templates: templates
-      });
-    });
+    this.unsubscribe = 
+    db.collection("templates").onSnapshot(this.onCollectionUpdate);
+  }
+
+  compon(){
+    this.unsubscribe()
   }
 
   render() {
@@ -104,18 +111,16 @@ class TemplateTable extends React.Component {
       })
       .map(template => {
         return (
-          <StyledRow>
+          <tr key = {template.key}>
             <td><Link to={`/templates/edit/${template.key}`}>{template.name}</Link></td>
             <td style={{ textAlign: "right" }}>
               <span id="template-controls" >
-            
-             
                 <OverlayTrigger
                   key={`trigger-delete-${template.key}`}
                   placement="bottom"
                   overlay={
                     <Tooltip key={`tooltip-delete-${template.key}`}>
-                      Permanently remove template
+                      No going back!
                     </Tooltip>
                   }
                 >
@@ -127,7 +132,7 @@ class TemplateTable extends React.Component {
                 </OverlayTrigger>
               </span>
             </td>
-          </StyledRow>
+          </tr>
         );
       });
     return (

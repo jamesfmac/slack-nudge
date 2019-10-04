@@ -4,11 +4,11 @@ import Header from "../components/Header"
 import TemplateTable from "../components/TemplateTable"
 import { Heading } from "../components/Styled"
 
-import TemplateForm from "../components/TemplateForm";
+
 import { showError, showSuccess, showInfo } from "../components/toasts/Toast";
 import { ToastContainer } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRedo } from "@fortawesome/free-solid-svg-icons";
+
 import { faLayerGroup } from "@fortawesome/free-solid-svg-icons";
 
 class Home extends React.Component {
@@ -35,7 +35,7 @@ class Home extends React.Component {
               </Heading>
            
           </Col>
-        <TemplateTable history ={this.props.history}/>
+        <TemplateTable showInfo = {showInfo} showSuccess = {showSuccess} showError={showError} history ={this.props.history}/>
         </Row>
       </Container>
     );

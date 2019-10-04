@@ -3,7 +3,7 @@ import React from 'react'
 import {Route, Redirect} from 'react-router-dom'
 
 const PrivateRoute = function({ component: Component, authed, ...rest }) {
-  console.log({...rest})
+
   
     return (
   
@@ -13,6 +13,7 @@ const PrivateRoute = function({ component: Component, authed, ...rest }) {
           authed != null ? (
             <Component {...props} {...rest} />
           ) : (
+            
             <Redirect
               to={{ pathname: "/login", state: { from: props.location } }}
             />

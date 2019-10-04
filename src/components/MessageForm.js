@@ -50,6 +50,8 @@ class MessageForm extends React.Component {
       ...formState,
       formTouched:true
     });
+    console.log('Template applied')
+    this.props.showSuccess('Template applied')
   };
 
   toggleAdvanced = () => {
@@ -434,10 +436,7 @@ console.log(`attache button: ${this.state.attachButton}`)
                           onMouseDown={e => e.preventDefault()}
                           onClick={this.handleSend}
                         >
-                          Send test Slack
-                        </Dropdown.Item>
-                        <Dropdown.Item eventKey="2">
-                          Save as template
+                          Send as test
                         </Dropdown.Item>
                       </DropdownButton>
                     </ButtonGroup>

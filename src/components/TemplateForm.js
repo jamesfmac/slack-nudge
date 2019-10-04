@@ -45,6 +45,7 @@ class TemplateForm extends React.Component {
     this.setState({
       ...formState
     });
+    
   };
 
   handleButtonChange() {
@@ -167,8 +168,7 @@ class TemplateForm extends React.Component {
   render() {
     const attachButton = this.state.attachButton;
     const url = "https://api.slack.com/block-kit";
-    console.log(this.props.history);
-
+ 
     return (
       <Col>
       

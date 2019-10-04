@@ -1,6 +1,6 @@
 import React from "react";
-import {Row, Col, Container } from "react-bootstrap";
-import Header from "../components/Header"
+import {Row, Container } from "react-bootstrap";
+
 
 import TemplateForm from "../components/TemplateForm";
 import { showError, showSuccess, showInfo } from "../components/toasts/Toast";
@@ -17,7 +17,7 @@ handleApplyTemplate = formState => {
  
     
   render() {
-    console.log(this.props)
+  
     return (
       <Container fluid = {false} >
         <ToastContainer />
